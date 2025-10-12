@@ -1,0 +1,135 @@
+<?php
+// lang/en.php
+return [
+    // --- General App & Navigation ---
+    'app_name' => 'Internship & Placement Management System',
+    'welcome_title' => 'Welcome to Uniflow',
+    'Empowering Students,Companies for Smarter Placements' => 'Empowering Students, Companies for Smarter Placements',
+    'go_to_home' => 'Go back to Home',
+    'logout' => 'Log Out',
+    'theme_toggle' => 'Theme Toggle',
+    
+    // --- Login & Registration Titles ---
+    'login_options' => 'Login Options',
+    'registration' => 'Registration',
+    'admin_login' => 'Admin Login',
+    'student_login' => 'Student Login',
+    'company_login' => 'Company Login',
+    
+    // --- Form Labels & Buttons ---
+    'email_label' => 'Email Address',
+    'label_user_login' => 'Username or Email',
+    'password_label' => 'Password',
+    'login_button' => 'Log In',
+    'register_student' => 'Register as Student',
+    'register_company' => 'Register as Company',
+    'enter_admin_credentials' => 'Enter your credentials to access the admin panel.',
+    
+    // --- Messages & Errors ---
+    'invalid_credentials' => 'Invalid email or password.',
+    'invalid_role' => 'Access Denied. Invalid role.',
+    'account_pending' => 'Your company account is pending Admin approval.',
+    
+    // --- Dashboard & Core Features (Next Steps) ---
+    
+    'student_dashboard' => 'Student Dashboard',
+    'company_dashboard' => 'Company Dashboard',
+    
+    
+
+    //admin features
+    'admin_dashboard' => 'Admin Dashboard',
+    'admin_panel' => 'Admin Panel',
+    'pending_approval' => 'Pending Approval',
+    'approved_companies' => 'Approved Companies',
+    'manage_companies' => 'Manage Companies',
+    'manage_students' => 'Manage Students',
+    'manage_jobs' => 'Manage Jobs',
+    'reports' => 'Reports',
+    'settings' => 'Settings',
+    'total_students' => 'Total Students',
+    'total_jobs' => 'Total Jobs',
+    'approved_companies' => 'Approved Companies',
+    'pending_approval' => 'Pending Approval',
+    'logout' => 'Log Out',
+    'action_required' => 'Action Required',
+    'pending_companies_count_message' => 'companies are pending approval. Please review and take necessary actions.',
+    'review_now' => 'Review Now',
+
+    //student features
+   'register_student_title' => 'Student Registration',
+   'label_fill_details' => 'Fill in the details to create your account.',
+   'label_full_name' => 'Full Name',
+   'label_username' => 'Username',
+    'label_major' => 'Major',
+    'label_gpa' => 'GPA',
+   'register_button' => 'Register',
+   'label_confirm_password' => 'Confirm Password',
+    'error_email_exists' => 'Email address already exists.',
+    'already_registered' => 'Already have an account? Log in here.',
+    'error_fill_all' => 'Please fill in all required fields.',
+    'error_password_match' => 'Passwords do not match.',
+    'error_password_length' => 'Password must be at least 6 characters long.',
+    'error_user_exists' => 'Email or username already registered.',
+    'register_success' => 'Registration successful. Please log in.',
+    'student_login_title' => 'Student Login',
+    'enter_student_credentials' => 'Enter your credentials to access the student panel.',
+    'not_registered' => 'Don\'t have an account yet? Register here.',
+    'welcome_student' => 'Welcome, Student User!',
+    'student_panel' => 'Student Panel',
+    'student_dashboard' => 'Student Dashboard',
+    'browse_jobs' => 'Browse Jobs',
+    'my_applications' => 'My Applications',
+    'profile_settings' => 'Profile Settings',
+     'not_student_account' => 'Only student accounts can access this area.',
+     'register_success' => 'Registration successful. Please log in.',
+    'total_applied' => 'Total Applications',
+    'shortlisted_count' => 'Shortlisted Count',
+    'student_profile' => 'Student Profile',
+    'upload_resume' => 'Upload CV / Resume',
+    'button_save_profile' => 'Save Profile',
+    'view_jobs' => 'View Jobs',
+    'label_address' => 'Address',
+    'label_dob' => 'Date of Birth',
+    'manage_skills' => 'Manage Skills','cert_add_success' => 'Certificate added successfully.',
+    'button_edit_profile' => 'Edit Profile','cert_update_success' => 'Certificate information updated successfully.',
+    'cert_update_success' => 'Certificate information updated successfully.','cert_delete_success' => 'Certificate deleted successfully.',
+    'error_general_try_again' => 'An error occurred. Please try again.',
+    'skill_update_success' => 'Skill information updated successfully.',
+    'label_gender' => 'Gender',
+    'view_summary' => 'View Summary',
+    'manage_projects' => 'Manage/Add Projects',
+    'project_update_success' => 'Project information updated successfully.',
+
+
+    //company features
+    'no_pending_companies' => 'No companies pending approval.',
+    'approved_list_note' => 'List of companies that have been approved.',
+    'label_company_name' => 'Company Name','label_industry' => 'Industry Type','label_email' => 'HR Contact Email',
+    'label_action' => 'Action','button_approve' => 'Approve','button_reject' => 'Reject',
+    'confirm_approve' => 'Are you sure you want to approve this company?',
+    'confirm_reject' => 'Are you sure you want to reject this company?',
+    'no_approved_companies' => 'No approved companies found.',
+    'button_disable' => 'Disable',
+    'button_enable' => 'Enable',
+    'button_delete' => 'Delete','total_jobs_posted' => 'Total Jobs Posted','total_applicants' => 'Total Applicants','total_shortlisted' => 'Total Shortlisted',
+    'confirm_disable' => 'Are you sure you want to disable this company?',
+    'confirm_enable' => 'Are you sure you want to enable this company?',
+    'confirm_delete' => 'Are you sure you want to delete this company? This action cannot be undone.',
+    'company_approved' => 'Company approved successfully.',
+    'company_disabled' => 'Company disabled successfully.',
+    'company_deleted' => 'Company deleted successfully.',
+    'not_company_account' => 'Only company accounts can login here.',
+    'company_panel' => 'Company Panel',
+    'company_dashboard' => 'Company Dashboard',
+    'post_job' => 'Post Job',
+    'manage_jobs' => 'Manage Jobs',
+    'view_applicants' => 'View Applicants',
+    'manage_applications' => 'Manage Applications',
+    'post_new_job' => 'Post New Job',
+    'company_profile' => 'Company Profile',
+
+
+
+];
+?>

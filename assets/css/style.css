@@ -1,0 +1,187 @@
+/*
+|--------------------------------------------------------------------------
+| UniMatch - Core Stylesheet (Refactored for Gradient Index Page)
+|--------------------------------------------------------------------------
+| Defines Universal CSS Variables and base styles for the entire application.
+*/
+
+/* ----------------- 1. Theme Variables ----------------- */
+
+:root {
+    /* --- Light Mode Defaults --- */
+    --content-min-height: calc(150vh - 150px);
+    /* Body Background Gradient */
+    --color-bg-gradient-start: #2563eb; /* Blue */
+    --color-bg-gradient-end: #7c3aed;   /* Violet/Purple */
+    --color-bg-sidebar: #ffffff;
+    --color-bg-footer: #F5F5F0;
+    --color-bg-dashboard: #F5F5F0; 
+    --color-bg-admin: #F5F5F0;
+    /* Core UI Colors */
+    --color-primary: #4f46e5;           /* Main Accent (Indigo) */
+    --color-accent: #007bff;            /* Links/Secondary Buttons */
+    --color-text: #050000;              /* Text on Gradient Background */
+     
+    /* Card & Modal Colors */
+    --color-bg-card: #ffffff;           /* White Card Background */
+    --color-text-card: #1f2937;         /* Dark Text on Card */
+    
+    --color-border: #cccccc;            /* Border Color */
+    --color-error: #ef4444;             /* Red for errors */
+}
+
+html[data-theme="dark"] {
+    /* --- Dark Mode Overrides --- */
+       --color-bg-gradient-start: #0f0f11;
+    --color-bg-gradient-end: #1a1a1d; 
+    /* Body Background Gradient */
+    --color-bg-gradient-start: #1e1e2f; /* Dark Blue-Gray */
+    --color-bg-gradient-end: #2c2c3e;   /* Darker Gray */
+    --color-bg-sidebar: #27272a;      
+    --color-bg-footer: #27272a; 
+    --color-bg-dashboard: #0f0f11;
+    --color-bg-admin: #0f0f11;
+    /* Core UI Colors */
+    --color-primary: #818cf8;           /* Lighter Indigo */
+    --color-accent: #4dabf7;            /* Lighter Links */
+    --color-text: #ffffff;              /* Text on Dark Gradient Background */
+    
+    /* Card & Modal Colors */
+    --color-bg-card: #27272a;           /* Dark Card Background */
+    --color-text-card: #e0e0e0;         /* Light Text on Dark Card */
+    
+    --color-border: #444444;            /* Dark Border Color */
+    --color-error: #f87171;
+}
+
+/* ----------------- 2. Global Resets & Body Styling ----------------- */
+
+body {
+    /* Apply Gradient Background */
+    background: linear-gradient(135deg, var(--color-bg-gradient-start), var(--color-bg-gradient-end));
+    color: var(--color-text); /* Text on the gradient background */
+    transition: background 0.3s, color 0.3s;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ----------------- 3. Card Styles (Used for Index Login Cards & Forms) ----------------- */
+
+.card, .login-card {
+    /* Uses Card specific variables */
+    background-color: var(--color-bg-card);
+    color: var(--color-text-card); /* Text color inside the card */
+    border-radius: 1rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease-in-out, background-color 0.3s, color 0.3s;
+    border: 1px solid var(--color-border);
+}
+
+.card:hover, .login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+/* ----------------- 4. Top Bar (Header) Styles ----------------- */
+
+.top-bar {
+    /* Uses Card variables for its appearance */
+    background-color: var(--color-bg-card);
+    color: var(--color-text-card); /* Text color inside the header */
+    padding: 0.5rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Language Toggle */
+.lang-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--color-primary); /* Primary button background */
+    color: var(--color-bg-card); /* White text on button */
+}
+
+/* Theme Toggle */
+.theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    /* Use Card Text for background, Card BG for text color to create contrast */
+    background-color: var(--color-text-card); 
+    color: var(--color-bg-card); 
+    transition: all 0.3s ease;
+}
+
+/* ----------------- 5. Form & Utility Styles ----------------- */
+
+input[type="text"], input[type="email"], input[type="password"] {
+    background-color: var(--color-bg-main);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-card);
+}
+
+.button-primary {
+    background-color: var(--color-primary);
+    color: var(--color-bg-card);
+    /* ... rest of the styles ... */
+}
+.button-primary:hover, .lang-toggle:hover, .theme-btn:hover {
+    opacity: 0.85;
+}
+
+a {
+    color: var(--color-primary);
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="file"],
+input[type="tel"] { /* Phone number အတွက် tel ကိုပါ ထည့်သွင်း */
+    /* Base styles (defined previously) */
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background-color: var(--color-bg-main); /* Input field background */
+    color: var(--color-text-card);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    
+    /* 💡 Modern Focus Ring Effect */
+    box-shadow: none;
+}
+
+input:focus,
+input:focus-visible {
+    border-color: var(--color-primary); /* Primary Color border on focus */
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* Custom Focus Ring Color (Indigo-600) */
+    outline: none;
+    background-color: var(--color-bg-card); /* Focus မှာ Background ကို Card အရောင် ပြန်ပေး (ပိုရှင်းသွားအောင်) */
+}
+
+/* Readonly fields style */
+input[disabled],
+input[readonly] {
+    opacity: 0.8;
+    background-color: var(--color-bg-sidebar) !important; /* Slightly distinct background */
+    border-style: dashed !important;
+}
