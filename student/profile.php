@@ -197,6 +197,9 @@ include '../templates/header.php';
                 <a href="manage_projects.php" class="flex items-center gap-3 text-indigo-700 hover:text-indigo-900 transition">
                     <i class="fa fa-folder-open w-5"></i><span><?php echo $lang['manage_projects'] ?? 'Manage/Add Projects'; ?></span>
                 </a>
+                <a href="view_profile_summary.php" class="flex items-center gap-3 text-indigo-700 hover:text-indigo-900 transition">
+                    <i class="fa fa-user w-5"></i><span><?php echo $lang['view_profile'] ?? 'View Profile Summary'; ?></span>
+                </a>
             </nav>
         </aside>
     </div>

@@ -151,6 +151,7 @@ function get_ring_chart_svg($percent, $color_hex) {
                 echo sidebar_link('my_applications.php', 'fa-file-alt', 'my_applications', 'my_applications.php');
                 echo sidebar_link('view_jobs.php', 'fa-briefcase', 'browse_jobs', 'view_jobs.php');
                 echo sidebar_link('cv_upload.php', 'fa-upload', 'upload_resume', 'cv_upload.php');
+                echo sidebar_link('inbox.php', 'fa-bell', 'notification_inbox', 'inbox.php');
                 echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
                 ?>
             </nav>

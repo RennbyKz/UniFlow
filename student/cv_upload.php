@@ -117,11 +117,11 @@ include '../templates/header.php';
                 <div class="mb-8 p-4 rounded-lg border border-dashed" style="border-color: var(--color-accent);">
                     <p class="font-medium text-lg mb-2">Current Status:</p>
                     <p class="text-sm">
-                        **Resume:** <?php if ($current_resume_path): ?>
+                        **Project Report:** <?php if ($current_resume_path): ?>
                             <span class="text-green-600 dark:text-green-400">Uploaded.</span> 
                             <a href="../<?php echo htmlspecialchars($current_resume_path); ?>" target="_blank" class="font-semibold" style="color: var(--color-primary);">View File</a>
                         <?php else: ?>
-                            <span class="text-red-600 dark:text-red-400">No Resume Uploaded.</span>
+                            <span class="text-red-600 dark:text-red-400">No Project Report Uploaded.</span>
                         <?php endif; ?>
                     </p>
                      <p class="text-sm mt-1">
@@ -154,12 +154,12 @@ include '../templates/header.php';
                             <button type="submit" name="upload_action" value="upload_resume"
                                     class="button-primary px-6 py-3 rounded-lg font-semibold w-full"
                                     style="background-color: var(--color-primary); color: var(--color-bg-card);">
-                                <i class="fa fa-file-alt mr-2"></i> Upload as RESUME (Brief)
+                                <i class="fa fa-file-alt mr-2"></i> Upload as Project Report 
                             </button>
                             <button type="submit" name="upload_action" value="upload_cv"
                                     class="button-primary px-6 py-3 rounded-lg font-semibold w-full mt-2"
                                     style="background-color: var(--color-accent); color: var(--color-bg-card);">
-                                <i class="fa fa-file-pdf mr-2"></i> Upload as CV (Detailed)
+                                <i class="fa fa-file-pdf mr-2"></i> Upload as CV 
                             </button>
                         </form>
                     </div>

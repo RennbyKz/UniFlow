@@ -6,7 +6,7 @@ require_once '../core/functions.php';
 init_system('review_applicant', 'company'); 
 
 // ------------------------------------------
-// Initialization & Data Fetch (Based on Application ID)
+// 1. Initialization & Data Fetch (Based on Application ID)
 // ------------------------------------------
 
 global $pdo;
@@ -28,7 +28,7 @@ try {
     // 1. Fetch Application, Job, Company & Student Data in one query
     $stmt = $pdo->prepare("
         SELECT 
-            a.*, j.title AS job_title, j.company_id,
+            a.*, j.title AS job_title, j.company_id, j.description AS job_description, j.required_skills AS job_required_skills,
             s.*, u.email, u.username
         FROM applications a
         JOIN jobs j ON a.job_id = j.job_id
@@ -89,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_status'])) {
         // Conditional Action: Interview Schedule
         if ($new_status === 'Interview') {
             if (empty($interview_date_str)) {
-                // If JS failed to provide date, throw error
                 throw new Exception($lang['error_interview_date_missing'] ?? 'Interview date is required.');
             }
             $update_query .= ", interview_date = ?";
@@ -102,9 +101,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_status'])) {
 
         $pdo->commit();
         
-        // 💡 Notification Logic (Placeholder for Email/Internal Inbox)
-        // Note: Implement send_internal_notification() and send_external_email() in core/functions.php
-        // Example: send_internal_notification($student_id, "Status Update: {$new_status}", $content, 'info');
+        // 💡 NOTIFICATION LOGIC
+        // Student Email/Data Fetch (Needed for Notification)
+        $stmt_noti_data = $pdo->prepare("
+            SELECT u.email, s.student_id, s.full_name 
+            FROM users u JOIN students s ON u.user_id = s.user_id WHERE s.student_id = ?
+        ");
+        $stmt_noti_data->execute([$student_id]);
+        $student_noti_info = $stmt_noti_data->fetch();
+
+        // Message Construction
+        $inbox_title = "Status Update: {$application['job_title']} changed to {$new_status}";
+        $inbox_content = "Your application for the job '{$application['job_title']}' has been reviewed.";
+        $noti_type = 'info';
+
+        if ($new_status === 'Interview') {
+            $inbox_content .= " Interview Scheduled on " . date('M d, Y H:i', strtotime($interview_date_str));
+            $noti_type = 'warning';
+        } elseif ($new_status === 'Selected') {
+            $inbox_content .= " Congratulations! You have been selected for the position.";
+            $noti_type = 'success';
+        } elseif ($new_status === 'Rejected') {
+            $inbox_content .= " Thank you for applying. Your application was not selected at this time.";
+            $noti_type = 'error';
+        }
+
+        // Send Internal Notification
+        if ($student_noti_info) {
+             send_internal_notification($student_noti_info['student_id'], $inbox_title, $inbox_content, $noti_type);
+        }
+        // Send External Email (Requires PHPMailer setup)
+        // send_external_email($student_noti_info['email'], $inbox_title, $inbox_content);
 
         set_session_message('status_update_success', 'success');
         header("Location: review_applicant.php?application_id={$application['id']}");
@@ -121,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_status'])) {
 // Header ကို ခေါ်ယူရန်
 include '../templates/header.php'; 
 ?>
+
 <body class="min-h-screen flex flex-col font-sans" style="background-color: var(--color-bg-main);">
     
     <?php include_utility_bar(); ?> 
@@ -156,7 +184,8 @@ include '../templates/header.php';
                             Applying for: <?php echo htmlspecialchars($application['job_title']); ?>
                         </p>
                     </div>
-                    <span class="px-3 py-1 rounded-full font-semibold text-white text-sm" style="background-color: <?php echo match($application['status']) { 'Selected' => '#10b981', 'Shortlisted' => '#2563eb', 'Rejected' => '#ef4444', default => '#f59e0b', }; ?>;">
+                    <span class="px-3 py-1 rounded-full font-semibold text-white text-sm" style="background-color: <?php echo match($application['status']) {
+                        'Selected' => '#10b981', 'Shortlisted' => '#2563eb', 'Rejected' => '#ef4444', default => '#f59e0b', }; ?>;">
                         <?php echo htmlspecialchars($application['status']); ?>
                     </span>
                 </div>
@@ -169,7 +198,7 @@ include '../templates/header.php';
                         <p class="col-span-2"><strong><i class="fa fa-map-marker-alt mr-2"></i>Address:</strong> <?php echo htmlspecialchars($profile['address'] ?? 'N/A'); ?></p>
                     </div>
                 </section>
-                
+
                 <section class="mb-6">
                     <h2 class="text-xl font-bold mb-2 border-b" style="color: var(--color-text-card); border-color: var(--color-border);">Academic Information</h2>
                     <div class="space-y-1 text-sm" style="color: var(--color-text-card); opacity: 0.9;">
@@ -178,7 +207,7 @@ include '../templates/header.php';
                     </div>
                 </section>
                 
-                <?php if (!empty($projects)): ?>
+               <?php if (!empty($projects)): ?>
                 <section class="mb-6">
                     <h2 class="text-xl font-bold mb-2 border-b" style="color: var(--color-text-card); border-color: var(--color-border);">Projects</h2>
                     <div class="space-y-4">
@@ -221,8 +250,7 @@ include '../templates/header.php';
                         </div>
                     <?php endif; ?>
                     </section>
-                <?php endif; ?>
-                
+                <?php endif; ?>           
                 <?php if (!empty($skills)): ?>
                 <section class="mb-6">
                     <h2 class="text-xl font-bold mb-2 border-b" style="color: var(--color-text-card); border-color: var(--color-border);">Technical Skills</h2>
@@ -232,13 +260,40 @@ include '../templates/header.php';
                         <?php endforeach; ?>
                     </div>
                 </section>
-                
                 <?php endif; ?>
 
-                <?php if (!empty($profile['resume_path'])): ?>
+                <?php if (!empty($certificates)): ?>
+    <section class="mb-6">
+        <h2 class="text-xl font-bold mb-2 border-b" style="color: var(--color-text-card); border-color: var(--color-border);">
+            Certificates
+        </h2>
+        <div class="space-y-4">
+            <?php foreach ($certificates as $cert): ?>
+                <div class="p-4 rounded-lg border" style="border-color: var(--color-border); background-color: var(--color-bg-main);">
+                    <h3 class="font-semibold text-lg" style="color: var(--color-primary);">
+                        <?php echo htmlspecialchars($cert['cert_name']); ?>
+                    </h3>
+                    <p class="text-sm mt-1 opacity-80" style="color: var(--color-text-card);">
+                        Issued by <?php echo htmlspecialchars($cert['issuer']); ?> 
+                        on <?php echo date('M d, Y', strtotime($cert['issue_date'])); ?>
+                        
+                        <?php if (!empty($cert['cert_path'])): ?>
+                            | <a href="../<?php echo htmlspecialchars($cert['cert_path']); ?>" target="_blank" class="font-medium" style="color: var(--color-accent);">
+                                View Certificate
+                            </a>
+                        <?php endif; ?>
+                    </p>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </section>
+<?php endif; ?>
+
+
+                <?php if (!empty($profile['cv_path'])): ?>
                 <section class="mb-6 text-center pt-4 border-t" style="border-color: var(--color-border);">
-                    <a href="../<?php echo htmlspecialchars($profile['resume_path']); ?>" target="_blank" class="px-6 py-3 rounded-lg text-white font-semibold text-lg" style="background-color: #f59e0b;">
-                        <i class="fa fa-file-pdf mr-2"></i> Download Original Resume
+                    <a href="../<?php echo htmlspecialchars($profile['cv_path']); ?>" target="_blank" class="px-6 py-3 rounded-lg text-white font-semibold text-lg" style="background-color: #f59e0b;">
+                        <i class="fa fa-file-pdf mr-2"></i> View CV
                     </a>
                 </section>
                 <?php endif; ?>

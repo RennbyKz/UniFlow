@@ -90,7 +90,7 @@ return [
     'button_save_profile' => 'Save Profile',
     'view_jobs' => 'View Jobs',
     'label_address' => 'Address',
-    'label_dob' => 'Date of Birth',
+    'label_dob' => 'Date of Birth','notification_inbox' => 'Inbox',
     'manage_skills' => 'Manage Skills','cert_add_success' => 'Certificate added successfully.',
     'button_edit_profile' => 'Edit Profile','cert_update_success' => 'Certificate information updated successfully.',
     'cert_update_success' => 'Certificate information updated successfully.','cert_delete_success' => 'Certificate deleted successfully.',

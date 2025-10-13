@@ -56,9 +56,9 @@ include '../templates/header.php';
         
         <main class="flex-grow p-8 flex justify-center" style="background-color: var(--color-bg-main);">
             
-            <div class="w-full max-w-4xl p-6 rounded-xl shadow-lg border" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
+            <div class="w-full max-w-4xl p-6 rounded-xl shadow-lg">
                 
-                <h1 class="text-3xl font-extrabold mb-8 pb-3 border-b" style="color: var(--color-primary); border-color: var(--color-border);">
+                <h1 class="text-3xl font-extrabold mb-8 pb-3 border-b" style="color: var(--color-main); border-color: var(--color-border);">
                     <?php echo $lang['my_applications'] ?? 'Application Tracking Center'; ?>
                 </h1>
                 
@@ -118,7 +118,21 @@ include '../templates/header.php';
                     </div>
                 <?php endif; ?>
             </div>
-
+                    <aside class="w-full md:w-80 p-6 border-l" 
+               style="background-color: var(--color-bg-card); border-color: var(--color-border); height: 100%; position: sticky; top: 60px;">
+               
+            <h2 class="text-xl font-bold mb-4" style="color: var(--color-text-card);">Profile Status</h2>          
+            <nav class="mt-8 space-y-3 border-t pt-4" style="border-color: var(--color-border);">
+                <?php
+                // 💡 Quick Links for navigation
+                echo sidebar_link('profile.php', 'fa-user-circle', 'student_profile', 'profile.php');
+                echo sidebar_link('my_applications.php', 'fa-file-alt', 'my_applications', 'my_applications.php');
+                echo sidebar_link('view_jobs.php', 'fa-briefcase', 'browse_jobs', 'view_jobs.php');
+                echo sidebar_link('cv_upload.php', 'fa-upload', 'upload_resume', 'cv_upload.php');
+                echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
+                ?>
+            </nav>
+        </aside>                     
         </main>
         
         </div>

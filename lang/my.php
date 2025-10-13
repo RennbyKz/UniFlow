@@ -84,7 +84,7 @@ return [
     'student_profile' => 'ကျောင်းသား ပရိုဖိုင်',
     'upload_resume' => 'CV / Resume တင်ရန်',
     'button_save_profile' => 'ပရိုဖိုင် သိမ်းရန်',
-    'view_jobs' => 'အလုပ်အကိုင်များ ကြည့်ရန်',
+    'view_jobs' => 'အလုပ်အကိုင်များ ကြည့်ရန်','notification_inbox' => 'အသိပေးချက်များ',
     'label_address' => 'လိပ်စာ','skill_update_success' => 'ကျွမ်းကျင်မှု အချက်အလက် အပ်ဒိတ် အောင်မြင်ပါသည်။',
     'label_dob' => 'မွေးနေ့','select_level' => 'အဆင့် ရွေးချယ်ပါ','level_expert' => 'ကျွမ်းကျင်သူ','level_advanced' => 'အဆင့်မြင့်','level_intermediate' => 'အလယ်အလတ်','level_beginner' => 'စတင်သူ',
     'manage_skills' => 'ကျွမ်းကျင်မှုများ စီမံရန်','add_skill' => 'ကျွမ်းကျင်မှု တင်ရန်','view_summary' => 'အကျဉ်းချုပ် ကြည့်ရန်','manage_projects' => 'ပရောဂျက်များ စီမံရန်/ထည့်ရန်',

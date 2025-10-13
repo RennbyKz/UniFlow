@@ -161,28 +161,17 @@ function horizontal_link($href, $icon, $label_key, $color_var) {
     </a>
     HTML;
 }
-function send_internal_notification($student_id, $title, $content, $type = 'info') {
-    global $pdo;
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO student_notifications (student_id, message_title, message_content, type) 
-            VALUES (?, ?, ?, ?)
-        ");
-        $stmt->execute([$student_id, $title, $content, $type]);
-    } catch (PDOException $e) {
-        // Log the error instead of dying
-        error_log("Failed to send internal notification: " . $e->getMessage());
-    }
-}
+
 function send_external_email($recipient_email, $subject, $body_html) {
-    // ... (Requires and PHPMailer instantiation) ...
-    
+    require_once ROOT_DIR . '/vendor/autoload.php'; 
+
+    $mail = new PHPMailer(true);
     try {
         // 💡 1. SMTP ကို ဖွင့်ပြီး Host ကို သတ်မှတ်
         $mail->isSMTP();
         $mail->Host       = SMTP_HOST;     // e.g., 'smtp.gmail.com'
         $mail->SMTPAuth   = true;
-        
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER; 
         // 💡 2. Authentication Credentials
         $mail->Username   = SMTP_USERNAME; // e.g., 'noreplyuniflow@gmail.com'
         $mail->Password   = SMTP_PASSWORD; // 💡 APP PASSWORD (Not Gmail Password)
@@ -198,6 +187,21 @@ function send_external_email($recipient_email, $subject, $body_html) {
         return true;
     } catch (Exception $e) {
         // ... (Error Logging) ...
+error_log("MAIL ERROR: " . $mail->ErrorInfo . " | Recipient: " . $recipient_email);
         return false;
     }
 }
+
+function send_internal_notification($student_id, $title, $content, $type = 'info') {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO student_notifications (student_id, message_title, message_content, type) 
+            VALUES (?, ?, ?, ?)
+        ");
+        $stmt->execute([$student_id, $title, $content, $type]);
+    } catch (PDOException $e) {
+        error_log("Failed to send internal notification: " . $e->getMessage());
+    }
+}
+?>

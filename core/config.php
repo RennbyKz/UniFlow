@@ -21,7 +21,7 @@ define('BASE_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/uniflow');
 // 💡 SMTP Configuration 
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 465); 
-define('SMTP_USERNAME', 'Uniflow Admin');
-define('SMTP_PASSWORD', 'vcay dwee tfjn jzqr');
+define('SMTP_USERNAME', 'noreplyuniflow@gmail.com');
+define('SMTP_PASSWORD', 'sjxc uhkf bvlb rtpn');
 
 ?>
