@@ -98,7 +98,8 @@ function get_ring_chart_svg($percent, $color_hex) {
 ?>
 
 <body class="min-h-screen flex flex-col font-sans" style="background-color: var(--color-bg-main);">
-    
+       <!-- ✅ Toast container -->
+        <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div> 
     <?php include_utility_bar(); ?> 
 
     <div class="flex flex-1 pt-16">
@@ -145,7 +146,7 @@ function get_ring_chart_svg($percent, $color_hex) {
                 <?php else: ?>
                     <?php foreach ($jobs_list as $job): ?>
                     <div class="card p-5 shadow-lg border" style="background-color: var(--color-bg-card); border-left: 5px solid var(--color-primary);">
-                        
+                        <a href="job_details.php?job_id=<?php echo $job['job_id']; ?>" style="color: var(--color-primary);">
                         <div class="flex justify-between items-start mb-3">
                             <div>
                                 <h3 class="text-xl font-bold" style="color: var(--color-primary);"><?php echo htmlspecialchars($job['title']); ?></h3>
@@ -171,12 +172,15 @@ function get_ring_chart_svg($percent, $color_hex) {
                                 </span>
                             </div>
                             
-                            <a href="apply_job.php?job_id=<?php echo $job['job_id']; ?>" 
-                               class="button-primary px-4 py-2 rounded-lg text-white text-sm" style="background-color: var(--color-primary);">
+                            <button type="button" 
+                                onclick="confirmApply(<?php echo $job['job_id']; ?>)"
+                                class="button-primary px-4 py-2 rounded-lg text-white text-sm" 
+                                style="background-color: var(--color-primary);">
                                 <i class="fa fa-paper-plane mr-1"></i> <?php echo $lang['button_apply'] ?? 'Apply Now'; ?>
-                            </a>
+                            </button>
                         </div>
                     </div>
+                    </a>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
@@ -227,6 +231,80 @@ function get_ring_chart_svg($percent, $color_hex) {
             </nav>
         </aside>
     </div>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+/**
+ * 1. Apply Confirmation (SweetAlert2)
+ */
+function confirmApply(jobId) {
+    // Localization Keys
+    const confirmTitle = '<?php echo addslashes($lang['confirm_apply_title'] ?? 'Confirm Application'); ?>';
+    const confirmText = '<?php echo addslashes($lang['confirm_application_message'] ?? 'Are you sure you want to apply? Your latest CV will be submitted.'); ?>';
+
+    Swal.fire({
+        title: confirmTitle,
+        text: confirmText,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: 'var(--color-primary)',
+        cancelButtonColor: '#aaa',
+        confirmButtonText: 'Yes, Apply!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            handleApply(jobId);
+        }
+    });
+}
+
+/**
+ * 2. AJAX Submission and Result Handling
+ */
+function handleApply(jobId) {
+    Swal.fire({
+        title: 'Submitting...',
+        text: 'Please wait while we process your application.',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
+
+    fetch('apply_job.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `job_id=${jobId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            Swal.fire('Success!', data.message, 'success');
+            // Page ကို Refresh လုပ်ပြီး Status ကို ပြရန်
+            setTimeout(() => { window.location.reload(); }, 1500); 
+
+        } else if (data.status === 'warning') {
+            // Already Applied
+            Swal.fire('Already Applied', data.message, 'warning');
+        
+        } else if (data.status === 'resume_error') {
+            // Resume Missing Error (Redirect to CV Upload)
+            Swal.fire({
+                title: 'CV Required',
+                text: data.message,
+                icon: 'error',
+                showConfirmButton: true,
+                confirmButtonText: 'Go to CV Upload'
+            }).then(() => {
+                 window.location.href = 'cv_upload.php';
+            });
+        
+        } else {
+            Swal.fire('Error!', data.message, 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Network Error', 'Could not connect to the server.', 'error');
+    });
+}
+</script>
 <?php include '../templates/footer.php'; ?>
 <?php ob_end_flush(); ?>

@@ -108,9 +108,10 @@ try {
 // Header ကို ခေါ်ယူရန်
 include '../templates/header.php'; 
 ?>
-<div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div>
+
 <body class="min-h-screen flex flex-col font-sans" style="background-color: var(--color-bg-main);">
-    
+   <!-- ✅ Toast container -->
+<div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div> 
     <?php include_utility_bar(); ?> 
 
     <div class="flex flex-1 pt-16">

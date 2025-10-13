@@ -118,55 +118,92 @@ include '../templates/header.php';
             
             <?php display_session_messages($lang); ?>
 
-            <div class="w-full max-w-4xl p-6 rounded-xl shadow-lg border" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
-                <form method="POST" action="post_job.php" class="space-y-6">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="title" class="block font-medium mb-1"><?php echo $lang['label_job_title'] ?? 'Job Title'; ?> <span class="text-red-500">*</span>:</label>
-                            <input type="text" id="title" name="title" required value="<?php echo htmlspecialchars($form_data['title'] ?? ''); ?>">
-                        </div>
-                        <div>
-                            <label for="type" class="block font-medium mb-1"><?php echo $lang['label_job_type'] ?? 'Job Type'; ?> <span class="text-red-500">*</span>:</label>
-                            <select id="type" name="type" required class="w-full px-4 py-2 border rounded-lg">
-                                <option value="">-- Select Type --</option>
-                                <option value="Internship" <?php echo (isset($form_data['type']) && $form_data['type'] == 'Internship') ? 'selected' : ''; ?>>Internship</option>
-                                <option value="Full-Time" <?php echo (isset($form_data['type']) && $form_data['type'] == 'Full-Time') ? 'selected' : ''; ?>>Full-Time</option>
-                                <option value="Part-Time" <?php echo (isset($form_data['type']) && $form_data['type'] == 'Part-Time') ? 'selected' : ''; ?>>Part-Time</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="location" class="block font-medium mb-1"><?php echo $lang['label_location'] ?? 'Location'; ?> <span class="text-red-500">*</span>:</label>
-                            <input type="text" id="location" name="location" required value="<?php echo htmlspecialchars($form_data['location'] ?? ''); ?>">
-                        </div>
-                        <div>
-                            <label for="deadline" class="block font-medium mb-1"><?php echo $lang['label_deadline'] ?? 'Application Deadline'; ?> <span class="text-red-500">*</span>:</label>
-                            <input type="date" id="deadline" name="deadline" required value="<?php echo htmlspecialchars($form_data['deadline'] ?? date('Y-m-d')); ?>">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label for="description" class="block font-medium mb-1"><?php echo $lang['label_job_description'] ?? 'Job Description'; ?> <span class="text-red-500">*</span>:</label>
-                        <textarea id="description" name="description" rows="6" required class="w-full px-4 py-2 border rounded-lg"><?php echo htmlspecialchars($form_data['description'] ?? ''); ?></textarea>
-                    </div>
+            <div class="w-full max-w-4xl p-6 rounded-xl shadow-lg border grid grid-cols-1 md:grid-cols-5 gap-6" 
+     style="background-color: var(--color-bg-card); border-color: var(--color-border);">
 
-                    <div>
-                        <label for="required_skills" class="block font-medium mb-1"><?php echo $lang['label_required_skills'] ?? 'Required Skills (Comma Separated)'; ?> <span class="text-red-500">*</span>:</label>
-                        <input type="text" id="required_skills" name="required_skills" required placeholder="e.g., PHP, SQL, Laravel, Teamwork" value="<?php echo htmlspecialchars($form_data['required_skills'] ?? ''); ?>">
-                    </div>
+    <!-- Vertical Nav Bar (Left Side) -->
+    <nav class="md:col-span-1 space-y-4">
+        <h2 class="text-xl font-semibold text-gray-700" style="color: var(--color-main);">
+            <?php echo $lang['job_posting_navigation'] ?? 'Job Posting Navigation'; ?>
+        </h2>
+        <ul class="space-y-2">
+            <li>
+                <a href="manage_jobs.php" class="text-blue-600 hover:text-blue-800"><?php echo $lang['nav_job_title'] ?? 'Manage Jobs'; ?></a>
+            </li>
+            <li>
+                <a href="#type-section" class="text-blue-600 hover:text-blue-800"><?php echo $lang['nav_job_type'] ?? 'Job Type'; ?></a>
+            </li>
+            <li>
+                <a href="#location-section" class="text-blue-600 hover:text-blue-800"><?php echo $lang['nav_location'] ?? 'Location'; ?></a>
+            </li>
+            <li>
+                <a href="#deadline-section" class="text-blue-600 hover:text-blue-800"><?php echo $lang['nav_deadline'] ?? 'Deadline'; ?></a>
+            </li>
+            <li>
+                <a href="#description-section" class="text-blue-600 hover:text-blue-800"><?php echo $lang['nav_job_description'] ?? 'Job Description'; ?></a>
+            </li>
+            <li>
+                <a href="#skills-section" class="text-blue-600 hover:text-blue-800"><?php echo $lang['nav_required_skills'] ?? 'Required Skills'; ?></a>
+            </li>
+        </ul>
+    </nav>
 
-                    <button type="submit" name="post_job" 
-                            class="button-primary px-6 py-3 rounded-lg font-semibold w-full"
-                            style="background-color: var(--color-primary); color: var(--color-bg-card);">
-                        <i class="fa fa-paper-plane mr-2"></i> <?php echo $lang['button_post_job'] ?? 'Post Job'; ?>
-                    </button>
-                </form>
-
+    <!-- Form Section (Right Side) -->
+    <section class="md:col-span-4 space-y-6">
+        <form method="POST" action="post_job.php" class="space-y-6">
+            
+            <!-- Job Title Section -->
+            <div id="title-section">
+                <label for="title" class="block font-medium mb-1"><?php echo $lang['label_job_title'] ?? 'Job Title'; ?> <span class="text-red-500">*</span>:</label>
+                <input type="text" id="title" name="title" required value="<?php echo htmlspecialchars($form_data['title'] ?? ''); ?>">
             </div>
+            
+            <!-- Job Type Section -->
+            <div id="type-section">
+                <label for="type" class="block font-medium mb-1"><?php echo $lang['label_job_type'] ?? 'Job Type'; ?> <span class="text-red-500">*</span>:</label>
+                <select id="type" name="type" required class="w-full px-4 py-2 border rounded-lg">
+                    <option value="">-- Select Type --</option>
+                    <option value="Internship" <?php echo (isset($form_data['type']) && $form_data['type'] == 'Internship') ? 'selected' : ''; ?>>Internship</option>
+                    <option value="Full-Time" <?php echo (isset($form_data['type']) && $form_data['type'] == 'Full-Time') ? 'selected' : ''; ?>>Full-Time</option>
+                    <option value="Part-Time" <?php echo (isset($form_data['type']) && $form_data['type'] == 'Part-Time') ? 'selected' : ''; ?>>Part-Time</option>
+                </select>
+            </div>
+            
+            <!-- Location Section -->
+            <div id="location-section">
+                <label for="location" class="block font-medium mb-1"><?php echo $lang['label_location'] ?? 'Location'; ?> <span class="text-red-500">*</span>:</label>
+                <input type="text" id="location" name="location" required value="<?php echo htmlspecialchars($form_data['location'] ?? ''); ?>">
+            </div>
+            
+            <!-- Deadline Section -->
+            <div id="deadline-section">
+                <label for="deadline" class="block font-medium mb-1"><?php echo $lang['label_deadline'] ?? 'Application Deadline'; ?> <span class="text-red-500">*</span>:</label>
+                <input type="date" id="deadline" name="deadline" required value="<?php echo htmlspecialchars($form_data['deadline'] ?? date('Y-m-d')); ?>">
+            </div>
+
+            <!-- Job Description Section -->
+            <div id="description-section">
+                <label for="description" class="block font-medium mb-1"><?php echo $lang['label_job_description'] ?? 'Job Description'; ?> <span class="text-red-500">*</span>:</label>
+                <textarea id="description" name="description" rows="6" required class="w-full px-4 py-2 border rounded-lg"><?php echo htmlspecialchars($form_data['description'] ?? ''); ?></textarea>
+            </div>
+
+            <!-- Required Skills Section -->
+            <div id="skills-section">
+                <label for="required_skills" class="block font-medium mb-1"><?php echo $lang['label_required_skills'] ?? 'Required Skills'; ?> <span class="text-red-500">*</span>:</label>
+                <input type="text" id="required_skills" name="required_skills" required placeholder="e.g., PHP, SQL, Laravel" value="<?php echo htmlspecialchars($form_data['required_skills'] ?? ''); ?>">
+            </div>
+
+            <button type="submit" name="post_job" class="button-primary px-6 py-3 rounded-lg font-semibold w-full"
+                    style="background-color: var(--color-primary); color: var(--color-bg-card);">
+                <i class="fa fa-paper-plane mr-2"></i> <?php echo $lang['button_post_job'] ?? 'Post Job'; ?>
+            </button>
+        </form>
+    </section>
+</div>
+
+            
         </main>
+       
     </div>
     
 <?php include '../templates/footer.php'; ?>

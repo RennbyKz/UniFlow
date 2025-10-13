@@ -8,9 +8,9 @@ $db   = DB_DATABASE;
 $user = DB_USER;
 $pass = DB_PASSWORD;
 $port = DB_PORT; 
-$charset = 'utf8mb4';
 
-$dsn = "mysql:host=$host;dbname=$db;port=$port;charset=$charset";
+
+$dsn = "mysql:host=$host;dbname=$db;port=$port";
 
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, 

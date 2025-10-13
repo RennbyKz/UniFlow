@@ -104,7 +104,7 @@ include '../templates/header.php';
 
     <div class="flex flex-1 pt-16">
         
-        <main class="flex-grow p-8 flex justify-center" style="background-color: var(--color-bg-dashboard);">
+        <main class="flex-grow p-8 flex justify-center" style="background-color: var(--color-bg-main);">
             
             <div class="w-full max-w-4xl p-8 rounded-xl shadow-2xl border" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
                 
