@@ -116,7 +116,7 @@ include '../templates/header.php';
 
     <div class="flex flex-1 pt-16">
         
-        <main class="flex-grow p-8" style="background-color: var(--color-bg-dashboard);">
+        <main class="flex-grow p-8" style="background-color: var(--color-bg-main); padding-left: 400px;">
             
             <h1 class="text-4xl font-extrabold mb-8 pb-3 border-b" style="color: var(--color-primary); border-color: var(--color-border);">
                 <?php echo $lang['manage_skills'] ?? 'Manage Skills'; ?>
@@ -195,7 +195,7 @@ include '../templates/header.php';
         </main>
         
         <aside class="w-full md:w-80 p-6 border-l" 
-               style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(100vh - 60px); position: sticky; top: 60px;">
+               style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(50vh - 60px); position: sticky; top: 60px;">
             
             <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);">Profile Management</h2>
             <nav class="mt-8 space-y-3 pt-4 border-t" style="border-color: var(--color-border);">

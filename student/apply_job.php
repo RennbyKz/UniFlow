@@ -1,12 +1,15 @@
 <?php
-// student/apply_job.php (Final Logic)
+// student/apply_job.php (Final Logic - JSON Output)
 ob_start(); 
 require_once '../core/functions.php'; 
 init_system('apply_job', 'student'); 
 
 global $pdo;
 $user_id = $_SESSION['user_id'];
-$job_id = isset($_POST['job_id']) ? sanitize_input($_POST['job_id']) : 0;
+// Job ID ကို POST ကနေ ယူပါ
+$job_id = isset($_POST['job_id']) ? (int)sanitize_input($_POST['job_id']) : 0;
+
+// Default error message 
 $response = ['status' => 'error', 'message' => (isset($lang['error_general_try_again']) ? $lang['error_general_try_again'] : 'An unknown error occurred.')];
 
 // ------------------------------------------
@@ -55,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $job_id) {
 // 2. JSON Response ဖြင့် ပြန်ပို့ခြင်း (AJAX Call အတွက်)
 // ------------------------------------------
 header('Content-Type: application/json');
-$response = ['status' => 'success', 'message' => 'Application submitted successfully!'];
 echo json_encode($response);
 ob_end_flush();
 exit();
+// This JSON output is the only thing the AJAX call should receive.
 ?>

@@ -48,6 +48,7 @@ try {
         JOIN jobs j ON a.job_id = j.job_id
         JOIN students s ON a.student_id = s.student_id
         WHERE j.company_id = :company_id
+        AND a.status NOT IN ('Selected', 'Rejected')
     ";
     $params = [':company_id' => $company_id];
     $where_clauses = [];
@@ -143,9 +144,17 @@ include '../templates/header.php';
                 </form>
             </div>
             
-            <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-card);">
-                Total Applications (<?php echo count($applications_list); ?>)
-            </h2>
+                    <!-- Heading with Total Applications & History Button -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold" style="color: var(--color-text-card);">
+                    Total Applications (<?php echo count($applications_list); ?>)
+                </h2>
+                <a href="history_applicants.php" 
+                class="text-sm px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 flex items-center">
+                    <i class="fa fa-history mr-2"></i> <?php echo $lang['button_view_history'] ?? 'View History'; ?>
+                </a>
+            </div>
+
             
             <div class="shadow-xl rounded-xl overflow-x-auto border" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
                 <table class="min-w-full divide-y divide-gray-200">

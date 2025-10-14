@@ -11,8 +11,8 @@
     /* --- Light Mode Defaults --- */
     --content-min-height: calc(150vh - 150px);
     /* Body Background Gradient */
-    --color-bg-gradient-start: #2563eb; /* Blue */
-    --color-bg-gradient-end: #7c3aed;   /* Violet/Purple */
+    --color-bg-gradient-start: #C5C7BC; /* Blue */
+    --color-bg-gradient-end: #E6D8C3;   /* Violet/Purple */
     --color-bg-sidebar: #ffffff;
     --color-bg-footer: #F5F5F0;
     --color-bg-dashboard: #F5F5F0; 

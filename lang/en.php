@@ -88,7 +88,7 @@ return [
     'student_profile' => 'Student Profile',
     'upload_resume' => 'Upload CV / Resume',
     'button_save_profile' => 'Save Profile',
-    'view_jobs' => 'View Jobs',
+    'view_jobs' => 'View Jobs','label_reason' => 'Reason',
     'label_address' => 'Address',
     'label_dob' => 'Date of Birth','notification_inbox' => 'Inbox',
     'manage_skills' => 'Manage Skills','cert_add_success' => 'Certificate added successfully.',
@@ -98,7 +98,7 @@ return [
     'skill_update_success' => 'Skill information updated successfully.',
     'label_gender' => 'Gender',
     'view_summary' => 'View Summary',
-    'manage_projects' => 'Manage/Add Projects',
+    'manage_projects' => 'Manage/Add Projects','back_view_job_details' => 'Back to Job Details',
     'project_update_success' => 'Project information updated successfully.',
 
 
@@ -123,7 +123,7 @@ return [
     'company_panel' => 'Company Panel',
     'company_dashboard' => 'Company Dashboard',
     'post_job' => 'Post Job',
-    'manage_jobs' => 'Manage Jobs',
+    'manage_jobs' => 'Manage Jobs','back_to_review' => 'Back to Reviews',
     'view_applicants' => 'View Applicants',
     'manage_applications' => 'Manage Applications',
     'post_new_job' => 'Post New Job',

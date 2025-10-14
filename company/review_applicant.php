@@ -36,6 +36,7 @@ try {
         JOIN students s ON a.student_id = s.student_id
         JOIN users u ON s.user_id = u.user_id
         WHERE a.application_id = :app_id AND c.user_id = :user_id
+        
     ");
     $stmt->execute([':app_id' => $application_id, ':user_id' => $user_id]);
     $review_data = $stmt->fetch();
@@ -80,59 +81,78 @@ try {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['new_status'])) {
     $new_status = sanitize_input($_POST['new_status']);
     $interview_date_str = sanitize_input($_POST['interview_date'] ?? null); 
+    $reason = sanitize_input($_POST['reason'] ?? null);
     
     try {
         $pdo->beginTransaction();
-        $params = [$new_status, $application['id']];
-        $update_query = "UPDATE applications SET status = ?, interview_date = NULL "; // Default date clear
+        
+        // Base Query: Status, Reason, and reset Interview Date
+        $update_query = "UPDATE applications SET status = ?, reason = ?, interview_date = NULL";
+        $params = [$new_status, $reason]; // Parameters for status and reason
 
         // Conditional Action: Interview Schedule
         if ($new_status === 'Interview') {
             if (empty($interview_date_str)) {
                 throw new Exception($lang['error_interview_date_missing'] ?? 'Interview date is required.');
             }
+            // Add interview_date to the query and params
             $update_query .= ", interview_date = ?";
-            $params = [$new_status, $interview_date_str, $application['id']];
+            $params[] = $interview_date_str; // Append the interview date
         }
+        
+        // Add the WHERE clause parameter last (application_id)
+        $params[] = $application['id']; 
 
         // Database Update
-        $stmt = $pdo->prepare($update_query . " WHERE application_id = ?");
-        $stmt->execute($params);
+        // The final query structure is: "UPDATE applications SET status = ?, reason = ?, interview_date = NULL [,... interview_date = ?] WHERE application_id = ?"
+        $stmt = $pdo->prepare($update_query . " WHERE application_id = ?"); 
+        $stmt->execute($params); // Now the parameter count matches the placeholder count
 
         $pdo->commit();
+        
+        // ... (NOTIFICATION LOGIC REMAINS THE SAME) ...
         
         // 💡 NOTIFICATION LOGIC
         // Student Email/Data Fetch (Needed for Notification)
         $stmt_noti_data = $pdo->prepare("
-            SELECT u.email, s.student_id, s.full_name 
-            FROM users u JOIN students s ON u.user_id = s.user_id WHERE s.student_id = ?
-        ");
-        $stmt_noti_data->execute([$student_id]);
-        $student_noti_info = $stmt_noti_data->fetch();
+             SELECT u.email, s.student_id, s.full_name 
+             FROM users u JOIN students s ON u.user_id = s.user_id WHERE s.student_id = ?
+         ");
+         $stmt_noti_data->execute([$student_id]);
+         $student_noti_info = $stmt_noti_data->fetch();
 
-        // Message Construction
-        $inbox_title = "Status Update: {$application['job_title']} changed to {$new_status}";
-        $inbox_content = "Your application for the job '{$application['job_title']}' has been reviewed.";
-        $noti_type = 'info';
+         // Message Construction (Ensure $inbox_content is HTML ready if send_external_email expects HTML)
+         $student_name = $student_noti_info['full_name'] ?? 'Applicant';
+         $inbox_title = "Status Update: {$application['job_title']} changed to {$new_status}";
+         $inbox_content = "Dear {$student_name},<br>Your application for the job '{$application['job_title']}' has been reviewed.";
+         $noti_type = 'info';
 
-        if ($new_status === 'Interview') {
-            $inbox_content .= " Interview Scheduled on " . date('M d, Y H:i', strtotime($interview_date_str));
-            $noti_type = 'warning';
-        } elseif ($new_status === 'Selected') {
-            $inbox_content .= " Congratulations! You have been selected for the position.";
-            $noti_type = 'success';
-        } elseif ($new_status === 'Rejected') {
-            $inbox_content .= " Thank you for applying. Your application was not selected at this time.";
-            $noti_type = 'error';
-        }
+         if ($new_status === 'Interview') {
+             $inbox_content .= "<br>Interview Scheduled on " . date('M d, Y H:i', strtotime($interview_date_str));
+             $noti_type = 'warning';
+         } elseif ($new_status === 'Selected') {
+             $inbox_content .= "<br>Congratulations! You have been selected for the position.";
+             $noti_type = 'success';
+         } elseif ($new_status === 'Rejected') {
+             $inbox_content .= "<br>Thank you for applying. Your application was not selected at this time.";
+             if (!empty($reason)) {
+                 $inbox_content .= "<br>Reason: " . htmlspecialchars($reason);
+             }
+             $noti_type = 'error';
+         }
 
-        // Send Internal Notification
-        if ($student_noti_info) {
+         // Send Internal Notification
+         if ($student_noti_info) {
              send_internal_notification($student_noti_info['student_id'], $inbox_title, $inbox_content, $noti_type);
-        }
-        // Send External Email (Requires PHPMailer setup)
-        // send_external_email($student_noti_info['email'], $inbox_title, $inbox_content);
-
+         }
+         
+         // Send External Email
+         if ($student_noti_info) {
+             // Assuming your send_external_email accepts the fourth parameter for noti_type or you remove it.
+             // Based on the error-free execution of the call, I will assume it accepts 3 parameters: (email, title, content)
+             send_external_email($student_noti_info['email'], $inbox_title, $inbox_content);
+         }
+        
         set_session_message('status_update_success', 'success');
         header("Location: review_applicant.php?application_id={$application['id']}");
         ob_end_flush(); exit();
@@ -150,7 +170,8 @@ include '../templates/header.php';
 ?>
 
 <body class="min-h-screen flex flex-col font-sans" style="background-color: var(--color-bg-main);">
-    
+     <!-- ✅ Toast container -->
+    <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div>
     <?php include_utility_bar(); ?> 
 
     <div class="flex flex-1" style="margin-top: 60px;">
@@ -169,7 +190,7 @@ include '../templates/header.php';
             </nav>
         </aside>
 
-        <main class="flex-grow p-8 ml-64 flex" style="background-color: var(--color-bg-dashboard);">
+        <main class="flex-grow p-8 ml-64 flex" style="background-color: var(--color-bg-main); padding-left: 200px">
             
             <div class="w-full max-w-4xl p-8 rounded-xl shadow-2xl border flex-grow" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
                 
@@ -263,31 +284,31 @@ include '../templates/header.php';
                 <?php endif; ?>
 
                 <?php if (!empty($certificates)): ?>
-    <section class="mb-6">
-        <h2 class="text-xl font-bold mb-2 border-b" style="color: var(--color-text-card); border-color: var(--color-border);">
-            Certificates
-        </h2>
-        <div class="space-y-4">
-            <?php foreach ($certificates as $cert): ?>
-                <div class="p-4 rounded-lg border" style="border-color: var(--color-border); background-color: var(--color-bg-main);">
-                    <h3 class="font-semibold text-lg" style="color: var(--color-primary);">
-                        <?php echo htmlspecialchars($cert['cert_name']); ?>
-                    </h3>
-                    <p class="text-sm mt-1 opacity-80" style="color: var(--color-text-card);">
-                        Issued by <?php echo htmlspecialchars($cert['issuer']); ?> 
-                        on <?php echo date('M d, Y', strtotime($cert['issue_date'])); ?>
-                        
-                        <?php if (!empty($cert['cert_path'])): ?>
-                            | <a href="../<?php echo htmlspecialchars($cert['cert_path']); ?>" target="_blank" class="font-medium" style="color: var(--color-accent);">
-                                View Certificate
-                            </a>
-                        <?php endif; ?>
-                    </p>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </section>
-<?php endif; ?>
+                    <section class="mb-6">
+                        <h2 class="text-xl font-bold mb-2 border-b" style="color: var(--color-text-card); border-color: var(--color-border);">
+                            Certificates
+                        </h2>
+                        <div class="space-y-4">
+                            <?php foreach ($certificates as $cert): ?>
+                                <div class="p-4 rounded-lg border" style="border-color: var(--color-border); background-color: var(--color-bg-main);">
+                                    <h3 class="font-semibold text-lg" style="color: var(--color-primary);">
+                                        <?php echo htmlspecialchars($cert['cert_name']); ?>
+                                    </h3>
+                                    <p class="text-sm mt-1 opacity-80" style="color: var(--color-text-card);">
+                                        Issued by <?php echo htmlspecialchars($cert['issuer']); ?> 
+                                        on <?php echo date('M d, Y', strtotime($cert['issue_date'])); ?>
+                                        
+                                        <?php if (!empty($cert['cert_path'])): ?>
+                                            | <a href="../<?php echo htmlspecialchars($cert['cert_path']); ?>" target="_blank" class="font-medium" style="color: var(--color-accent);">
+                                                View Certificate
+                                            </a>
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </section>
+                <?php endif; ?>
 
 
                 <?php if (!empty($profile['cv_path'])): ?>
@@ -315,6 +336,33 @@ include '../templates/header.php';
                     </span>
                 </p>
 
+                <?php
+                        // 1. မဖတ်ရသေးသော စာတိုအရေအတွက်ကို ရယူခြင်း (Chat Count)
+                        $unread_chat_count = 0;
+                        try {
+                            // လက်ရှိ Company user မှ ပို့ထားသော စာများမှလွဲ၍ ကျန်ရှိသော မဖတ်ရသေးသည့် စာတိုအရေအတွက်ကို ရယူသည်။
+                            $stmt_chat_count = $pdo->prepare("
+                                SELECT COUNT(*) 
+                                FROM messages 
+                                WHERE application_id = ? AND sender_id != ? AND is_read = 0
+                            ");
+                            $stmt_chat_count->execute([$application['id'], $user_id]);
+                            $unread_chat_count = $stmt_chat_count->fetchColumn();
+                        } catch (PDOException $e) {
+                            error_log("Chat count error: " . $e->getMessage());
+                        }
+
+                        // 2. Chat Button ၏ Label ကို ဖန်တီးခြင်း
+                        $chat_label = 'Chat with Applicant';
+                        if ($unread_chat_count > 0) {
+                            $chat_label .= " <span class='ml-1 bg-red-600 text-white text-xs px-2 py-1 rounded-full'>{$unread_chat_count} New</span>";
+                        }
+                ?>
+                <a href="../student/chat.php?app_id=<?php echo $application['id']; ?>" 
+                       class="flex items-center justify-center p-3 rounded-lg font-semibold text-white transition duration-150"
+                       style="background-color: var(--color-accent);">
+                       <i class="fa fa-comment mr-2"></i> <?php echo $chat_label; ?>
+                </a>
                 <form method="POST" id="statusUpdateForm" action="review_applicant.php?application_id=<?php echo $application['id']; ?>" class="space-y-4">
                     <input type="hidden" name="application_id" value="<?php echo $application['id']; ?>">
                     
@@ -328,6 +376,9 @@ include '../templates/header.php';
                         <option value="Selected" <?php echo ($application['status'] === 'Selected') ? 'selected' : ''; ?>>Offer Selected</option>
                         <option value="Rejected" <?php echo ($application['status'] === 'Rejected') ? 'selected' : ''; ?>>Reject</option>
                     </select>
+                    
+                    <h3 class="font-bold mb-2">Optional Reason:</h3>
+                    <textarea name="reason" rows="3" class="w-full px-3 py-2 border rounded-lg" placeholder="Add an optional reason for the status update... (e.g., weak portfolio, no response, etc.)"></textarea>
 
                     <button type="submit" class="w-full button-primary py-2 rounded-lg text-white font-semibold" style="background-color: var(--color-primary);">
                         Update Applicant

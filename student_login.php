@@ -16,31 +16,58 @@ $toast_type = 'error';
 $login_success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 💡 NOTE: ?? Operator များကို Ternary ဖြင့် ပြင်ထားခြင်း ရှိ/မရှိ စစ်ဆေးပါ။
+    // ဤကုဒ်သည် PHP 7.0+ (??) နှင့် 5.6+ (isset()) နှစ်မျိုးလုံးတွင် အလုပ်လုပ်စေရန် ရိုးရှင်းစွာရေးထားသည်။
     $login_input = sanitize_input($_POST['login_input'] ?? '');
     $password = $_POST['password'] ?? '';
 
     global $pdo;
+    
+    // 1. Data Fetch: User ID, Hashed Password, Role, and Approval Status ကို ယူခြင်း
     $stmt = $pdo->prepare("
-        SELECT user_id, username, email, password, role 
+        SELECT user_id, username, email, password, role, is_approved 
         FROM users 
-        WHERE (email = ? OR username = ?)
+        WHERE (email = ? OR username = ?) AND role = 'student'
     ");
     $stmt->execute([$login_input, $login_input]);
     $user = $stmt->fetch();
+    
+    // Default error type
+    $toast_type = 'error';
 
-    if ($user && $user['role'] !== 'student') {
-        $error_message = $lang['not_student_account'] ?? 'Only student accounts can login here.';
-        $toast_type = 'error';
-    } elseif ($user && password_verify($password, $user['password'])) {
+    // 2. Authentication Check & Status Filtering
+    if (!$user) {
+        // Case 1: User/Password combination not found
+        $error_message = $lang['invalid_credentials'] ?? 'Invalid username or password.';
+
+    } elseif (!password_verify($password, $user['password'])) {
+        // Case 2: Password Wrong
+        $error_message = $lang['invalid_credentials'] ?? 'Invalid username or password.';
+
+    } elseif ($user['is_approved'] === 'No') {
+        // 💡 Case 3: Account Disabled by Admin
+        $error_message = $lang['account_disabled'] ?? 'Your account has been disabled by the administration.';
+        $toast_type = 'error'; // Disabled account သည် Error အဖြစ် ပြသရန်
+
+    } else {
+        // ✅ Case 4: SUCCESS - Login ဝင်ခွင့်ပြုပါ
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['role'] = $user['role'];
-        $_SESSION['user_name'] = $login_input;
+        $_SESSION['user_name'] = $login_input; // Header မှာ ပြသရန်
+        
+        // Student Profile Picture ကို Fetch ပြီး Session တွင် ထည့်သွင်းရန် လိုအပ်ပါက:
+        // $stmt_pic = $pdo->prepare("SELECT profile_picture_path FROM students WHERE user_id = ?");
+        // $stmt_pic->execute([$user['user_id']]);
+        // $_SESSION['photo_path'] = $stmt_pic->fetchColumn(); 
 
         $login_success = true;
         $success_message = $lang['login_success'] ?? 'Login successful! Redirecting...';
-    } else {
-        $error_message = $lang['invalid_credentials'] ?? 'Invalid username or password.';
-        $toast_type = 'error';
+    }
+    
+    // 3. Error Toast Handling (Login Failure)
+    if (isset($error_message)) {
+        // Error ရှိမှသာ Toast ကို ထုတ်လွှတ်ပြီး Page ကို ဆက်သွားစေပါမည်
+        set_session_message($error_message, $toast_type); 
     }
 
     if ($login_success) {

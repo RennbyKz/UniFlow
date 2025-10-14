@@ -15,7 +15,7 @@ try {
     global $pdo;
     $user_id = $_SESSION['user_id'];
     
-    $stmt = $pdo->prepare("SELECT student_id, full_name, gpa, major FROM students WHERE user_id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM students WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $student_data = $stmt->fetch();
     
@@ -33,13 +33,24 @@ try {
         $shortlisted_count = $stmt->fetchColumn();
 
         // 3. Profile ဖြည့်သွင်းမှု ရာခိုင်နှုန်း (5 items: Name, Major, GPA, Email, Resume)
-        $total_items = 5;
+        $total_items = 16;
         $filled_count = 0;
         if (!empty($student_data['full_name'])) $filled_count++;
         if (!empty($student_data['major'])) $filled_count++;
         if (!empty($student_data['gpa'])) $filled_count++;
         if (!empty($_SESSION['user_name'])) $filled_count++; // Username/Email from session
-        if (!empty($student_data['resume_path'])) $filled_count++; // Assume resume_path is set upon upload
+        if (!empty($student_data['contact_phone'])) $filled_count++; 
+        if (!empty($student_data['photo_path'])) $filled_count++; 
+        if (!empty($student_data['dob'])) $filled_count++; 
+        if (!empty($student_data['gender'])) $filled_count++; 
+        if (!empty($student_data['address'])) $filled_count++; 
+        if (!empty($student_data['linkedin_url'])) $filled_count++; 
+        if (!empty($student_data['github_url'])) $filled_count++; 
+        if (!empty($student_data['career_objective'])) $filled_count++; 
+        if (!empty($student_data['university_name'])) $filled_count++; 
+        if (!empty($student_data['year_of_study'])) $filled_count++; 
+        if (!empty($student_data['education'])) $filled_count++; 
+        if (!empty($student_data['cv_path'])) $filled_count++; // Assume cv_path is set upon upload
         
         $profile_complete_percent = round(($filled_count / $total_items) * 100);
     }

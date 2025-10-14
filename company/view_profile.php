@@ -58,7 +58,7 @@ include '../templates/header.php';
             </nav>
         </aside>
 
-        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main);">
+        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main); padding-left: 280px;">
             
             <div class="w-full max-w-4xl p-6 rounded-xl shadow-lg border" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
                 

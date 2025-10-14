@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             
             set_session_message('job_post_success', 'success');
-            header("Location: dashboard.php"); // Dashboard သို့ ပြန်ပို့
+            header("Location: manage_jobs.php"); // Dashboard သို့ ပြန်ပို့
             ob_end_flush();
             exit();
 
@@ -110,7 +110,7 @@ include '../templates/header.php';
             </nav>
         </aside>
 
-        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main);">
+        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main); padding-left: 280px;">
             
             <h1 class="text-4xl font-extrabold mb-8 pb-3 border-b" style="color: var(--color-main); border-color: var(--color-border);">
                 <?php echo $lang['post_new_job'] ?? 'Post a New Job/Internship'; ?>

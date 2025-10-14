@@ -487,7 +487,7 @@ include '../templates/header.php';
         </main>
         
         <aside class="w-full md:w-80 p-6 border-l" 
-            style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(100vh - 60px); position: sticky; top: 60px;">
+            style="background-color: var(--color-bg-card); border-color: var(--color-border); height: max-content; position: sticky; top: 60px;">
                 
             <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);">Profile Actions</h2>
             <nav class="mt-8 space-y-3 pt-4 border-t" style="border-color: var(--color-border);">

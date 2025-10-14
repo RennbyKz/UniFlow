@@ -83,7 +83,7 @@ function format_date_range($start, $end) {
         }
         
         /* General Styling */
-        .main-header h1 { font-size: 20pt; color: #1a1a1a; margin: 0 0 3px 0; text-transform: uppercase; }
+        .main-header h1 { font-size: 19pt; color: #1a1a1a; margin: 0 0 3px 0; text-transform: uppercase; }
         .main-header h2 { font-size: 11pt; color: #666; margin: 0 0 15px 0; font-weight: normal; }
         .section-box { margin-bottom: 15px; page-break-inside: avoid; }
         .section-title {

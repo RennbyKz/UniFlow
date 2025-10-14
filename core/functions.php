@@ -162,36 +162,52 @@ function horizontal_link($href, $icon, $label_key, $color_var) {
     HTML;
 }
 
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP; // Add this USE statement for the SMTP constant
+
 function send_external_email($recipient_email, $subject, $body_html) {
+    // Note: The autoload should be at the top of the file/script, 
+    // but keeping it here for demonstration:
     require_once ROOT_DIR . '/vendor/autoload.php'; 
 
     $mail = new PHPMailer(true);
     try {
-        // 💡 1. SMTP ကို ဖွင့်ပြီး Host ကို သတ်မှတ်
+        // 1. SMTP Configuration (As you already set up)
         $mail->isSMTP();
         $mail->Host       = SMTP_HOST;     // e.g., 'smtp.gmail.com'
         $mail->SMTPAuth   = true;
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER; 
-        // 💡 2. Authentication Credentials
-        $mail->Username   = SMTP_USERNAME; // e.g., 'noreplyuniflow@gmail.com'
-        $mail->Password   = SMTP_PASSWORD; // 💡 APP PASSWORD (Not Gmail Password)
-        
-        // 💡 3. Encryption Type and Port
-        $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS; // Use ENCRYPTION_SMTPS or ENCRYPTION_STARTTLS
-        $mail->Port       = SMTP_PORT;     // 465 (for SMTPS) or 587 (for TLS)
+        $mail->SMTPDebug  = SMTP::DEBUG_SERVER; 
+        $mail->Username   = SMTP_USERNAME;
+        $mail->Password   = SMTP_PASSWORD;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; 
+        $mail->Port       = SMTP_PORT;
 
-        $mail->setFrom(SMTP_USERNAME, APP_NAME . ' Admin'); // 💡 Config မှ Username ကို သုံးသင့်သည်
-        // ... (AddAddress and Body) ...
+        // 2. SENDER INFORMATION
+        $mail->setFrom(SMTP_USERNAME, APP_NAME . ' Admin'); 
         
+        // 3. RECIPIENT, SUBJECT, and BODY (***These were missing!***)
+        
+        // Add the main recipient
+        $mail->addAddress($recipient_email); 
+        
+        // Content Settings
+        $mail->isHTML(true); // Set email format to HTML
+        $mail->Subject = $subject;
+        $mail->Body    = $body_html;
+        
+        // Optional: A plaintext version of the email for older clients
+        $mail->AltBody = strip_tags($body_html); 
+
+        // 4. SEND EMAIL
         $mail->send();
         return true;
     } catch (Exception $e) {
-        // ... (Error Logging) ...
-error_log("MAIL ERROR: " . $mail->ErrorInfo . " | Recipient: " . $recipient_email);
+        error_log("MAIL ERROR: " . $mail->ErrorInfo . " | Recipient: " . $recipient_email);
         return false;
     }
 }
-
 function send_internal_notification($student_id, $title, $content, $type = 'info') {
     global $pdo;
     try {
@@ -202,6 +218,110 @@ function send_internal_notification($student_id, $title, $content, $type = 'info
         $stmt->execute([$student_id, $title, $content, $type]);
     } catch (PDOException $e) {
         error_log("Failed to send internal notification: " . $e->getMessage());
+    }
+}
+/**
+ * သတ်မှတ်ထားသော application_id ပေါ်မူတည်၍ Chat Room အတွက် စာတိုများကို ရယူသည်။
+ * @param int $application_id Chat thread ၏ ID။
+ * @return array စာတိုများ၏ list ကို ပြန်ပေးသည်။
+ */
+function get_messages($application_id) {
+    global $pdo;
+    try {
+        $stmt = $pdo->prepare("
+            SELECT 
+                m.message_id, /* <--- ADDED */
+                m.message_content, 
+                m.sent_at, 
+                m.sender_id,
+                u.role AS sender_role 
+            FROM messages m
+            JOIN users u ON m.sender_id = u.user_id
+            WHERE m.application_id = ?
+            ORDER BY m.sent_at ASC
+        ");
+        $stmt->execute([$application_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("DB Error fetching messages: " . $e->getMessage());
+        return [];
+    }
+}
+/**
+ * စာတိုအသစ်ကို Database ထဲသို့ ထည့်သွင်းသည်။
+ * @param int $application_id Chat thread ၏ ID။
+ * @param int $sender_id စာပို့သူ၏ user_id။
+ * @param string $content စာတိုအကြောင်းအရာ။
+ * @return bool Success/Failure.
+ */
+function send_message($application_id, $sender_id, $content) {
+    global $pdo;
+    try {
+        // is_read ကို default 0 (မဖတ်ရသေး) ထားမည်
+        $stmt = $pdo->prepare("
+            INSERT INTO messages (application_id, sender_id, message_content) 
+            VALUES (?, ?, ?)
+        ");
+        return $stmt->execute([$application_id, $sender_id, $content]);
+    } catch (PDOException $e) {
+        error_log("DB Error sending message: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * လက်ခံသူမှ Chat Room ကို ဖွင့်လိုက်သောအခါ မဖတ်ရသေးသော စာတိုများကို ဖတ်ပြီးကြောင်း မှတ်သားသည်။
+ * @param int $application_id Chat thread ၏ ID။
+ * @param int $recipient_user_id စာတိုများကို ဖတ်ခဲ့သည့် user_id (လက်ခံသူ)။
+ * @return bool Success/Failure.
+ */
+function mark_messages_as_read($application_id, $recipient_user_id) {
+    global $pdo;
+    try {
+        // စာဖတ်သူ၏ ID မဟုတ်သော (ဆိုလိုသည်မှာ စာပို့သူဖြစ်သော) မဖတ်ရသေးသည့် စာများကိုသာ ပြောင်းမည်
+        $stmt = $pdo->prepare("
+            UPDATE messages 
+            SET is_read = 1 
+            WHERE application_id = ? 
+              AND sender_id != ? 
+              AND is_read = 0
+        ");
+        return $stmt->execute([$application_id, $recipient_user_id]);
+    } catch (PDOException $e) {
+        error_log("DB Error marking messages as read: " . $e->getMessage());
+        return false;
+    }
+}
+/**
+ * Deletes a message if the current user is the sender.
+ * @param int $message_id The ID of the message to delete.
+ * @param int $user_id The ID of the currently logged-in user (sender).
+ * @return bool True on success, false on failure (including authorization failure).
+ */
+function delete_message(int $message_id, int $user_id): bool {
+    global $pdo;
+
+    try {
+        // 1. Verify the user is the sender of the message
+        $stmt_check = $pdo->prepare("SELECT sender_id FROM messages WHERE message_id = ?");
+        $stmt_check->execute([$message_id]);
+        $message = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+        if (!$message || $message['sender_id'] != $user_id) {
+            // Message not found or user is not the sender
+            return false; 
+        }
+
+        // 2. Perform the deletion
+        $stmt_delete = $pdo->prepare("DELETE FROM messages WHERE message_id = ? AND sender_id = ?");
+        $stmt_delete->execute([$message_id, $user_id]);
+
+        return $stmt_delete->rowCount() > 0;
+
+    } catch (PDOException $e) {
+        // Log the error (optional)
+        error_log("Database Error in delete_message: " . $e->getMessage());
+        return false;
     }
 }
 ?>

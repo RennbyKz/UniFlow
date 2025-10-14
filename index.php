@@ -70,7 +70,6 @@ if (isset($_SESSION['user_id'])) {
                 </a>
             </div>
         </div>
-
     </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="stylesheet" href="assets/css/sweetalert2.min.css">

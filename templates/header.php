@@ -6,6 +6,7 @@ global $lang, $current_lang, $page_title_key;
 
 
 $user_display_name = $_SESSION['user_name'] ?? 'Guest';
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $current_lang; ?>"

@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             set_session_message('profile_update_success', 'success');
-            header("Location: profile.php");
+            header("Location: view_profile.php");
             ob_end_flush();
             exit();
 
@@ -131,7 +131,7 @@ include '../templates/header.php';
             </nav>
         </aside>
 
-        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main);">
+        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main); padding-left: 280px;">
             
             <h1 class="text-4xl font-extrabold mb-8 pb-3 border-b" style="color: var(--color-main); border-color: var(--color-border);">
                 <?php echo $lang['company_profile'] ?? 'Company Profile Management'; ?>

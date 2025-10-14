@@ -43,20 +43,24 @@ try {
     $resume_path = $student_data['resume_path'] ?? null;
 
     // 3. လျှောက်ထားပြီးသား ဖြစ်/မဖြစ် စစ်ဆေးခြင်း
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM applications WHERE student_id = ? AND job_id = ?");
+    $stmt = $pdo->prepare("SELECT application_id, status FROM applications WHERE student_id = ? AND job_id = ?");
     $stmt->execute([$student_id, $job_id]);
-    $applied_status = $stmt->fetchColumn() > 0;
+    $application_info = $stmt->fetch(); // Fetch the entire row
 
-} catch (PDOException $e) {
-    set_session_message($lang['error_general_try_again'] . " (DB Error)", 'error');
-}
+    $applied_status = $application_info ? true : false;
+    $application_id_if_applied = $application_info['application_id'] ?? 0; // 💡 application_id ကို သိမ်းထားပါ
+
+    } catch (PDOException $e) {
+        set_session_message($lang['error_general_try_again'] . " (DB Error)", 'error');
+    }
 
 include '../templates/header.php'; 
 ?>
 <body class="min-h-screen flex flex-col font-sans" style="background-color: var(--color-bg-main);">
     
     <?php include_utility_bar(); ?> 
-
+   <!-- ✅ Toast container -->
+    <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div> 
     <div class="flex flex-1 pt-16">
         
         <main class="flex-grow p-8 flex justify-center" style="background-color: var(--color-bg-main);">
@@ -104,11 +108,13 @@ include '../templates/header.php';
                          <a href="cv_upload.php" class="px-4 py-2 rounded-lg font-semibold text-white" style="background-color: #ef4444;">
                             <i class="fa fa-upload mr-2"></i> <?php echo $lang['error_resume_missing'] ?? 'Upload CV to Apply'; ?>
                         </a>
-                    <?php else: ?>
-                        <a href="apply_job.php?job_id=<?php echo $job_id; ?>" class="button-primary px-6 py-3 rounded-lg font-semibold" style="background-color: var(--color-primary); color: var(--color-bg-card);">
-                            <i class="fa fa-paper-plane mr-2"></i> <?php echo $lang['button_apply'] ?? 'Apply Now'; ?>
-                        </a>
-                    <?php endif; ?>
+               <?php else: ?>
+                        <button id="applyButton" data-job-id="<?php echo $job_id; ?>" 
+                                class="button-primary px-6 py-3 rounded-lg font-semibold cursor-pointer" 
+                                style="background-color: var(--color-primary); color: var(--color-bg-card);">
+                                <i class="fa fa-paper-plane mr-2"></i> <?php echo $lang['button_apply'] ?? 'Apply Now'; ?>
+                        </button>
+                <?php endif; ?>
                 </div>
 
                 <section class="mb-6">
@@ -148,14 +154,103 @@ include '../templates/header.php';
             </div>
         </main>
         
-        <aside class="w-full md:w-80 p-6 border-l" 
-               style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(100vh - 60px); position: sticky; top: 60px;">
-               
+            <aside class="w-full md:w-80 p-6 border-l" 
+            style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(100vh - 60px); position: sticky; top: 60px;">
+
             <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);">Quick Actions</h2>
             <nav class="mt-8 space-y-3 pt-4 border-t" style="border-color: var(--color-border);">
-                </nav>
-        </aside>
+
+                            <?php 
+                                // လျှောက်လွှာတင်ပြီးမှသာ Chat ခလုတ်ပေါ်လာသင့်သည်
+                                if ($applied_status): 
+                            ?>
+            <a href="chat.php?app_id=<?php echo $application_id_if_applied; ?>" 
+            class="block px-4 py-3 rounded-lg font-semibold text-white text-center"
+            style="background-color: var(--color-accent); cursor: pointer;">
+            <i class="fa fa-comment mr-2"></i> Chat with Recruiter
+            </a>
+                            <?php else: ?>
+                            <span class="block px-4 py-3 rounded-lg text-center opacity-70" style="color: var(--color-text-card);">
+                                Chat available after application.
+                            </span>
+                            <?php endif; ?>
+
+                            <a href="<?php echo htmlspecialchars($job['website_url'] ?? '#'); ?>" target="_blank" 
+            class="block px-4 py-2 rounded-lg hover:underline" 
+            style="background-color: var(--color-bg-main); border: 1px solid var(--color-border); color: var(--color-text-card);">
+            <i class="fa fa-globe mr-2"></i> Visit Company Website
+            </a>
+                            
+                            <a href="company_profile.php?company_id=<?php echo $job['company_id']; ?>" 
+                            class="block px-4 py-2 rounded-lg hover:underline"
+                            style="background-color: var(--color-bg-main); border: 1px solid var(--color-border); color: var(--color-text-card);">
+                            <i class="fa fa-building mr-2"></i> View Company Profile
+                            </a>
+                            
+            </nav>
+            </aside>
     </div>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
+    <script>
+        $(document).ready(function() {
+            $('#applyButton').on('click', function() {
+                const jobId = $(this).data('job-id');
+
+                Swal.fire({
+                    title: 'Confirm Application?',
+                    text: "You are about to submit your application for this job.",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: 'var(--color-primary)', // Use your primary color
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, Apply!',
+                    showLoaderOnConfirm: true,
+                    preConfirm: () => {
+                        return $.ajax({
+                            url: 'apply_job.php',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: { job_id: jobId }
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                             // Handle PHP/server errors (e.g., if apply_job.php throws 500)
+                             return Swal.showValidationMessage(`Request failed: ${textStatus} ${errorThrown}`);
+                        });
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const response = result.value;
+                        
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                // Reload page to update 'Already Applied' status
+                                window.location.reload(); 
+                            });
+                        } else if (response.status === 'resume_error') {
+                            Swal.fire({
+                                title: 'CV Required',
+                                text: response.message,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Go to CV Upload'
+                            }).then((r) => {
+                                if (r.isConfirmed) {
+                                    window.location.href = 'cv_upload.php';
+                                }
+                            });
+                        } else {
+                            // General or Already Applied error
+                            Swal.fire('Failed', response.message, 'error');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 <?php include '../templates/footer.php'; ?>
 <?php ob_end_flush(); ?>

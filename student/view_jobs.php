@@ -173,10 +173,9 @@ function get_ring_chart_svg($percent, $color_hex) {
                             </div>
                             
                             <button type="button" 
-                                onclick="confirmApply(<?php echo $job['job_id']; ?>)"
                                 class="button-primary px-4 py-2 rounded-lg text-white text-sm" 
                                 style="background-color: var(--color-primary);">
-                                <i class="fa fa-paper-plane mr-1"></i> <?php echo $lang['button_apply'] ?? 'Apply Now'; ?>
+                                <i class="fa fa-paper-plane mr-1"></i> <?php echo $lang['button_detail'] ?? 'Details'; ?>
                             </button>
                         </div>
                     </div>
@@ -233,28 +232,7 @@ function get_ring_chart_svg($percent, $color_hex) {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-/**
- * 1. Apply Confirmation (SweetAlert2)
- */
-function confirmApply(jobId) {
-    // Localization Keys
-    const confirmTitle = '<?php echo addslashes($lang['confirm_apply_title'] ?? 'Confirm Application'); ?>';
-    const confirmText = '<?php echo addslashes($lang['confirm_application_message'] ?? 'Are you sure you want to apply? Your latest CV will be submitted.'); ?>';
 
-    Swal.fire({
-        title: confirmTitle,
-        text: confirmText,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: 'var(--color-primary)',
-        cancelButtonColor: '#aaa',
-        confirmButtonText: 'Yes, Apply!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            handleApply(jobId);
-        }
-    });
-}
 
 /**
  * 2. AJAX Submission and Result Handling

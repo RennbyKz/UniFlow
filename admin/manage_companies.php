@@ -93,7 +93,8 @@ include '../templates/header.php';
 ?>
 <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div>
 <body class="min-h-screen flex flex-col font-sans" style="background-color: var(--color-bg-main);">
-    
+       <!-- ✅ Toast container -->
+    <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div> 
     <?php include_utility_bar(); ?> 
 
     <div class="flex flex-1" style="margin-top: 60px;">
@@ -224,7 +225,11 @@ include '../templates/header.php';
                                             id="form-<?php echo $company['company_id']; ?>">
                                             
                                             <input type="hidden" name="company_id" value="<?php echo $company['company_id']; ?>">
-                                            
+
+                                             <a href="view_company_profile.php?company_id=<?php echo $company['company_id']; ?>" 
+                                                class="text-blue-500 hover:text-blue-700" title="View Profile">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                             <button type="button" 
                                                     onclick="confirmAction(<?php echo $company['company_id']; ?>, 'disable', '<?php echo $lang['confirm_disable']; ?>')"
                                                     class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded-md text-xs shadow-md transition duration-300">
@@ -236,6 +241,8 @@ include '../templates/header.php';
                                                     class="bg-red-800 hover:bg-red-900 text-white font-bold py-1 px-3 rounded-md text-xs shadow-md transition duration-300">
                                                 <i class="fa fa-trash mr-1"></i> <?php echo $lang['button_delete']; ?>
                                             </button>
+
+
                                             
                                             <input type="hidden" name="action" id="action-<?php echo $company['company_id']; ?>">
                                         </form>
