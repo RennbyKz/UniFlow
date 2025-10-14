@@ -96,7 +96,9 @@ include '../templates/header.php';
                 echo sidebar_link('dashboard.php', 'fa-tachometer-alt', 'admin_dashboard', 'dashboard.php');
                 echo sidebar_link('manage_companies.php', 'fa-building', 'manage_companies', 'manage_companies.php');
                 echo sidebar_link('manage_students.php', 'fa-users', 'manage_students', $currentPageFile); // Active
+                echo sidebar_link('manage_jobs.php', 'fa-briefcase', 'manage_jobs', 'manage_jobs.php');
                 echo sidebar_link('reports.php', 'fa-chart-line', 'reports', 'reports.php');
+                echo sidebar_link('settings.php', 'fa-cog', 'settings', 'settings.php');
                 echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
                 ?>
             </nav>
@@ -110,6 +112,7 @@ include '../templates/header.php';
 
                 <div class="flex justify-between items-center pb-4 mb-6 border-b" style="border-color: var(--color-primary);">
                     <div>
+                        <img src="../<?php echo htmlspecialchars($profile['photo_path']); ?>" alt="Profile Picture" class="w-32 h-32 object-contain rounded-md border">
                         <h1 class="text-4xl font-extrabold" style="color: var(--color-primary);">
                             <?php echo htmlspecialchars($profile['full_name'] ?? 'N/A'); ?>
                         </h1>

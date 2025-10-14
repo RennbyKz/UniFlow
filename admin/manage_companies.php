@@ -106,12 +106,12 @@ include '../templates/header.php';
             <nav class="space-y-2">
                 <?php
                 $currentPageFile = basename(__FILE__); // manage_companies.php
-                echo sidebar_link('dashboard.php', 'fa-tachometer-alt', 'admin_dashboard', $currentPageFile);
+                echo sidebar_link('dashboard.php', 'fa-tachometer-alt', 'admin_dashboard', 'dashboard.php');
                 echo sidebar_link('manage_companies.php', 'fa-building', 'manage_companies', $currentPageFile);
-                echo sidebar_link('manage_students.php', 'fa-users', 'manage_students', $currentPageFile);
-                echo sidebar_link('manage_jobs.php', 'fa-briefcase', 'manage_jobs', $currentPageFile);
-                echo sidebar_link('reports.php', 'fa-chart-line', 'reports', $currentPageFile);
-                echo sidebar_link('settings.php', 'fa-cog', 'settings', $currentPageFile);
+                echo sidebar_link('manage_students.php', 'fa-users', 'manage_students', 'manage_students.php');
+                echo sidebar_link('manage_jobs.php', 'fa-briefcase', 'manage_jobs', 'manage_jobs.php');
+                echo sidebar_link('reports.php', 'fa-chart-line', 'reports', 'reports.php');
+                echo sidebar_link('settings.php', 'fa-cog', 'settings', 'settings.php');
                 echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
                 ?>
             </nav>
@@ -165,7 +165,10 @@ include '../templates/header.php';
                                             <form method="POST" action="manage_companies.php" 
                                                   class="flex justify-center space-x-2" 
                                                   id="form-<?php echo $company['company_id']; ?>"> <input type="hidden" name="company_id" value="<?php echo $company['company_id']; ?>">
-                                                
+                                                    <a href="view_company_profile.php?company_id=<?php echo $company['company_id']; ?>" 
+                                                        class="text-blue-500 hover:text-blue-700" title="View Profile">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
                                                 <button type="button" 
                                                         onclick="confirmAction(<?php echo $company['company_id']; ?>, 'approve', '<?php echo addslashes($lang['confirm_approve']); ?>', 'form-<?php echo $company['company_id']; ?>')"
                                                         class="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded-md text-xs shadow-md transition duration-300">

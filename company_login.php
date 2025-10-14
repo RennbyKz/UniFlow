@@ -128,6 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php echo $lang['register_company'] ?? 'Register Company'; ?>
             </a>
         </p>
+        <p class="mt-6 text-center text-sm" style="color: var(--color-text-card);">
+            <?php echo $lang['forgot_password_title'] ?? 'Forgot Password?'; ?>
+            <a href="forgot_password.php" class="hover:underline" style="color: var(--color-primary);">
+                <?php echo $lang['reset_password_title'] ?? 'Reset Password'; ?>
+            </a>
+        </p>
     </div>
 </div>
 

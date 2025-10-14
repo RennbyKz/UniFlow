@@ -67,6 +67,7 @@ include '../templates/header.php';
                 echo sidebar_link('manage_companies.php', 'fa-building', 'manage_companies', 'manage_companies.php');
                 echo sidebar_link('manage_students.php', 'fa-users', 'manage_students', $currentPageFile); // Active
                 echo sidebar_link('reports.php', 'fa-chart-line', 'reports', 'reports.php');
+                echo sidebar_link('settings.php', 'fa-cog', 'settings', 'settings.php');
                 echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
                 ?>
             </nav>
@@ -80,6 +81,9 @@ include '../templates/header.php';
 
                 <div class="pb-4 mb-6 border-b flex justify-between items-center" style="border-color: var(--color-primary);">
                     <div>
+                        
+                        <img src="../<?php echo htmlspecialchars($company_data['logo_path']); ?>" alt="Company Logo" class="w-32 h-32 object-contain rounded-md border">
+                       
                         <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">
                             <?php echo htmlspecialchars($company_data['name'] ?? 'N/A'); ?> Profile
                         </h1>
@@ -110,8 +114,11 @@ include '../templates/header.php';
                     </div>
                 </section>
 
-                <section class="border-t pt-4" style="border-color: var(--color-border);">
-                    <a href="../company/manage_jobs.php" class="font-medium" style="color: var(--color-primary);">View All Jobs Posted by this Company</a>
+               <section class="border-t pt-4" style="border-color: var(--color-border);">
+                    <a href="manage_jobs.php?company_id=<?php echo $company_id_to_view; ?>" 
+                    class="font-medium" style="color: var(--color-primary);">
+                        View All Jobs Posted by this Company
+                    </a>                  
                 </section>
 
             </div>

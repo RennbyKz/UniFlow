@@ -34,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($password !== $confirm_password) {
         $errors[] = $lang['error_password_match'] ?? 'Passwords do not match.';
     }
-    // (အခြား validation များ ထပ်ထည့်နိုင်သည်)
     
     // 3. Email / Username Duplication Check
     if (empty($errors)) {
@@ -90,15 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ------------------------------------------
 // HTML Output
 // ------------------------------------------
+
 ?>
 
 <?php include 'templates/header.php'; ?> 
-    
+<!-- ✅ Toast container -->
+<div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50"></div> 
     <div class="flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
         
         <div class="w-full max-w-lg rounded-2xl shadow-2xl p-8 login-card">
             
             <div class="text-center mb-6">
+                <img src="assets/images/UNIFLOW.png" alt="UNIFLOW Logo" style="height: 180px; width: auto; margin: 0 auto;">
                 <h1 class="text-3xl font-extrabold" style="color: var(--color-primary);">
                     <?php echo $lang['register_company_title'] ?? 'Company Registration'; ?>
                 </h1><br/>
@@ -131,25 +133,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div>
                         <label for="username" class="block font-medium mb-1" style="color: var(--color-text-card);"><?php echo $lang['label_username'] ?? 'Username'; ?>:</label>
                         <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($form_data['username'] ?? ''); ?>" required
-                                class="w-full px-4 py-2 border rounded-lg">
+                                class="w-full px-4 py-2 border rounded-lg" oninput="checkUsername()">
+                        <small id="usernameError" style="color: red; display: none;">Username is already taken.</small>
                     </div>
                     <div>
                         <label for="email" class="block font-medium mb-1" style="color: var(--color-text-card);"><?php echo $lang['email_label'] ?? 'Login Email'; ?>:</label>
                         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($form_data['email'] ?? ''); ?>" required
-                                class="w-full px-4 py-2 border rounded-lg">
+                                class="w-full px-4 py-2 border rounded-lg" oninput="checkEmail()">
+                        <small id="emailError" style="color: red; display: none;">Email is already registered.</small>
                     </div>
                 </div>
                 
                 <div>
                     <label for="password" class="block font-medium mb-1" style="color: var(--color-text-card);"><?php echo $lang['password_label'] ?? 'Password'; ?> (Min 6 chars):</label>
                     <input type="password" id="password" name="password" required
-                            class="w-full px-4 py-2 border rounded-lg">
+                            class="w-full px-4 py-2 border rounded-lg" oninput="validatePasswords()">
                 </div>
                 
                 <div>
                     <label for="confirm_password" class="block font-medium mb-1" style="color: var(--color-text-card);"><?php echo $lang['label_confirm_password'] ?? 'Confirm Password'; ?>:</label>
                     <input type="password" id="confirm_password" name="confirm_password" required
-                            class="w-full px-4 py-2 border rounded-lg">
+                            class="w-full px-4 py-2 border rounded-lg" oninput="validatePasswords()">
+                    <small id="passwordError" style="color: red; display: none;">Passwords do not match.</small>
                 </div>
                 
                 <button type="submit"
@@ -170,4 +175,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
 <?php include 'templates/footer.php'; ?>
+
+<script>
+// Check Username Availability
+function checkUsername() {
+    const username = document.getElementById('username').value;
+    if (username.length > 2) {
+        fetch(`core/check_username.php?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.available) {
+                    document.getElementById('usernameError').style.display = 'inline';
+                } else {
+                    document.getElementById('usernameError').style.display = 'none';
+                }
+            });
+    }
+}
+
+// Check Email Availability
+function checkEmail() {
+    const email = document.getElementById('email').value;
+    fetch(`core/check_email.php?email=${email}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.available) {
+                document.getElementById('emailError').style.display = 'inline';
+            } else {
+                document.getElementById('emailError').style.display = 'none';
+            }
+        });
+}
+
+// Password Validation
+function validatePasswords() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    if (password !== confirmPassword) {
+        document.getElementById('passwordError').style.display = 'inline';
+    } else {
+        document.getElementById('passwordError').style.display = 'none';
+    }
+}
+</script>
+
 <?php ob_end_flush(); ?>

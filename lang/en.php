@@ -4,7 +4,7 @@ return [
     // --- General App & Navigation ---
     'app_name' => 'Internship & Placement Management System',
     'welcome_title' => 'Welcome to Uniflow',
-    'Empowering Students,Companies for Smarter Placements' => 'Empowering Students, Companies for Smarter Placements',
+    'YNCSHWU' => 'Your Next Career Starts With UniFlow',
     'go_to_home' => 'Go back to Home',
     'logout' => 'Log Out',
     'theme_toggle' => 'Theme Toggle',
@@ -129,7 +129,12 @@ return [
     'post_new_job' => 'Post New Job',
     'company_profile' => 'Company Profile',
 
-
+//forgot password
+    'forgot_password_title' => 'Forgot Password?',
+    'reset_password_title' => 'Reset Password',
+    'password_reset_sent' => 'Password reset link/code has been sent to your email.',
+    'password_reset_success' => 'Your password has been successfully reset. Please log in.',
+    'error_invalid_or_expired_token' => 'Invalid or expired reset link/code. Please try again.',
 
 ];
 ?>

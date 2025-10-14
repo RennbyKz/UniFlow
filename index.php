@@ -27,13 +27,14 @@ if (isset($_SESSION['user_id'])) {
             transform: translateY(-5px);
         }
     </style>
-
+    <link rel="icon" href="assets/images/UNIFLOW.png" type="image/x-icon">
     <div class="flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
         
             <div class="text-center mb-10 mt-6">
+                <img src="assets/images/UNIFLOW.png" alt="UNIFLOW Logo" style="height: 250px; width: auto; margin: 0 auto;">
                 <h1 class="text-4xl font-bold mb-2 text-white drop-shadow-lg">
                     <?php echo $lang['welcome_title']; ?><br><br>
-                    <?php echo $lang['Empowering Students,Companies for Smarter Placements']; ?>
+                    <?php echo $lang['YNCSHWU']; ?>
                 </h1><br/>
                 <p class="text-lg text-gray-200"><?php echo $lang['login_options']; ?></p>
             </div>

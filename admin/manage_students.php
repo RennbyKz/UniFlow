@@ -118,13 +118,15 @@ include '../templates/header.php';
                 echo sidebar_link('dashboard.php', 'fa-tachometer-alt', 'admin_dashboard', 'dashboard.php');
                 echo sidebar_link('manage_companies.php', 'fa-building', 'manage_companies', 'manage_companies.php');
                 echo sidebar_link('manage_students.php', 'fa-users', 'manage_students', $currentPageFile); // Active
+                echo sidebar_link('manage_jobs.php', 'fa-briefcase', 'manage_jobs', $currentPageFile);
                 echo sidebar_link('reports.php', 'fa-chart-line', 'reports', 'reports.php');
+                echo sidebar_link('settings.php', 'fa-cog', 'settings', $currentPageFile);
                 echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
                 ?>
             </nav>
         </aside>
 
-        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-dashboard);">
+        <main class="flex-1 p-8 ml-64" style="background-color: var(--color-bg-main);">
             
             <h1 class="text-4xl font-extrabold mb-8 pb-3 border-b" style="color: var(--color-primary); border-color: var(--color-border);">
                 <?php echo $lang['manage_students'] ?? 'Manage Students'; ?>

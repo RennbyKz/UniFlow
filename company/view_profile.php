@@ -53,6 +53,7 @@ include '../templates/header.php';
                 echo sidebar_link('post_job.php', 'fa-plus-circle', 'post_new_job', 'post_job.php');
                 echo sidebar_link('manage_applications.php', 'fa-envelope-open-text', 'manage_applications', 'manage_applications.php');
                 echo sidebar_link('profile.php', 'fa-user-circle', 'company_profile', $currentPageFile); // Active
+                  echo sidebar_link('settings.php', 'fa-cog', 'settings', 'settings.php');
                 echo sidebar_link('../logout.php', 'fa-sign-out-alt', 'logout', 'logout');
                 ?>
             </nav>

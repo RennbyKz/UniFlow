@@ -4,7 +4,7 @@ return [
     // --- General App & Navigation ---
     'app_name' => 'ကျောင်းသား အလုပ်သင် စီမံခန့်ခွဲမှုစနစ်',
     'welcome_title' => 'Uniflow မှ ကြိုဆိုပါတယ်',
-    'Empowering Students,Companies for Smarter Placements' => 'ကျောင်းသားများနှင့် ကုမ္ပဏီများအား ပိုမိုထက်မြက်သော အလုပ်သင်များအတွက် အားထားရာ',
+    'YNCSHWU' => 'သင်၏ ခြေလှမ်းများကို၊ UniFlow နဲ့စတင်လိုက်ပါ',
     'go_to_home' => 'ပင်မ စာမျက်နှာသို့ ပြန်သွားရန်',
     'logout' => 'ထွက်ရန်',
     'theme_toggle' => 'အသွင်အပြင် ပြောင်းရန်',
@@ -145,4 +145,14 @@ return [
     'manage_applications' => 'လျှောက်ထားမှု စီမံရန်',
     'post_new_job' => 'အလုပ်အကိုင် တင်ရန်',
     'company_profile' => 'ကုမ္ပဏီ ပရိုဖိုင်','back_to_review' => 'Reviews သို့ပြန်သွားရန်',
+
+  //forgot password
+    'forgot_password_title' => 'လျှို့ဝှက်နံပါတ် မေ့နေပါသလား?',
+    'reset_password_title' => 'လျှို့ဝှက်နံပါတ် အသစ်သတ်မှတ်ရန်',
+    'password_reset_sent' => 'လျှို့ဝှက်နံပါတ် အသစ်သတ်မှတ်ရန် Code ကို Email သို့ ပို့လိုက်ပါပြီ။',
+    'password_reset_success' => 'လျှို့ဝှက်နံပါတ် အောင်မြင်စွာ ပြင်ဆင်ပြီးပါပြီ။',
+    'error_invalid_or_expired_token' => 'OTP မှားယွင်းနေပါသည် သို့မဟုတ် သက်တမ်းကုန်နေပါပြီ။',
+    'back_login'=> 'ပြန်လည်ဝင်ရောက်ရန်','verify_code'=> 'ကုဒ်ကိုအတည်ပြုပါ',
+    'noti_restpass'=> 'သင်၏အီးမေးလ်လိပ်စာကိုထည့်ပြီး OTP ရယူပါ','label_newpass6'=> 'စကားဝှက်အသစ် (အနည်းဆုံး ၆ လက္ခဏာ)',
+    'send_code'=> 'OTP ရယူရန်','label_newpass' => 'အတည်ပြုစကားဝှက်အသစ်',
 ];
