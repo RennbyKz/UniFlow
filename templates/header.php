@@ -21,7 +21,7 @@ $user_display_name = $_SESSION['user_name'] ?? 'Guest';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="<?php echo BASE_URL; ?>/assets/js/toast.js"></script>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css"> 
-    
+    <link rel="icon" href="<?php echo BASE_URL; ?>/assets/images/UNIFLOW.png" type="image/png">
     <script>
         // Theme Setup & Toggle Logic (functions.php မှ ခေါ်ရန်)
         const currentTheme = localStorage.getItem('theme');

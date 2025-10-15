@@ -121,12 +121,12 @@ function get_ring_chart_svg($percent, $color_hex) {
                     </div>
                     
                     <div>
-                        <label for="type" class="block font-medium mb-1">Job Type:</label>
+                        <label for="type" class="block font-medium mb-1"><?php echo $lang[ 'label_jobtype'] ?? 'Job Type' ?></label>
                         <select id="type" name="type" class="w-full px-4 py-2 border rounded-lg">
-                            <option value="">-- All Types --</option>
-                            <option value="Internship" <?php echo ($filter_type == 'Internship') ? 'selected' : ''; ?>>Internship</option>
-                            <option value="Full-Time" <?php echo ($filter_type == 'Full-Time') ? 'selected' : ''; ?>>Full-Time</option>
-                            <option value="Part-Time" <?php echo ($filter_type == 'Part-Time') ? 'selected' : ''; ?>>Part-Time</option>
+                            <option value="">-- <?php echo $lang[ 'label_all'] ?? 'ALL' ?>--</option>
+                            <option value="Internship" <?php echo ($filter_type == 'Internship') ? 'selected' : ''; ?>><?php echo $lang[ 'label_all_intern'] ?? 'Internship' ?></option>
+                            <option value="Full-Time" <?php echo ($filter_type == 'Full-Time') ? 'selected' : ''; ?>><?php echo $lang[ 'label_fulltime'] ?? 'Full-Time' ?></option>
+                            <option value="Part-Time" <?php echo ($filter_type == 'Part-Time') ? 'selected' : ''; ?>><?php echo $lang[ 'label_parttiime'] ?? 'Part-Time' ?></option>
                         </select>
                     </div>
                     
@@ -166,7 +166,7 @@ function get_ring_chart_svg($percent, $color_hex) {
                         
                         <div class="flex justify-between items-center text-xs">
                             <div>
-                                <span class="text-sm font-semibold mr-3" style="color: var(--color-text-card);">Skills:</span>
+                                <span class="text-sm font-semibold mr-3" style="color: var(--color-text-card);"><?php echo $lang['label_skill'] ?? 'Skill'; ?></span>
                                 <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-md text-xs" style="color: var(--color-text-card);">
                                     <?php echo htmlspecialchars(substr($job['required_skills'], 0, 30)); ?>...
                                 </span>
@@ -189,7 +189,7 @@ function get_ring_chart_svg($percent, $color_hex) {
         <aside class="w-full md:w-80 p-6 border-l" 
                style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(100vh - 60px); position: sticky; top: 60px;">
                
-            <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);">Profile Status</h2>
+            <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);"><?php echo $lang['lable_profile_status'] ?? 'Profile Status' ?></h2>
             
             <div class="flex flex-col items-center">
                 <div class="relative mb-4">
@@ -207,7 +207,7 @@ function get_ring_chart_svg($percent, $color_hex) {
                 </p>
                 
                 <a href="profile.php" class="mt-4 px-4 py-2 rounded-lg text-white font-medium button-primary" style="background-color: var(--color-primary);">
-                    Update Profile
+                   <?php echo $lang[ 'button_edit_profile']?>
                 </a>
             </div>
             

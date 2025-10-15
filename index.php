@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) {
 ?>
 
 <?php include 'templates/header.php'; ?> 
-    
+
     <style>
         /* 💡 Dark Mode support အတွက် CSS variables သာ အသုံးပြုပါမည် */
         body {
@@ -27,7 +27,7 @@ if (isset($_SESSION['user_id'])) {
             transform: translateY(-5px);
         }
     </style>
-    <link rel="icon" href="assets/images/UNIFLOW.png" type="image/x-icon">
+    
     <div class="flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
         
             <div class="text-center mb-10 mt-6">

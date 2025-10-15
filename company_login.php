@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $login_success = true;
             $success_message = $lang['login_success'] ?? 'Login successful! Redirecting...';
+            $pdo->exec("UPDATE users SET last_login = NOW() WHERE user_id = {$user['user_id']}"); 
         }
     } else {
         $error_message = $lang['invalid_credentials'] ?? 'Invalid username or password.';

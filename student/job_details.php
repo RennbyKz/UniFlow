@@ -119,7 +119,7 @@ include '../templates/header.php';
 
                 <section class="mb-6">
                     <h2 class="text-xl font-bold mb-3 border-b pb-1" style="color: var(--color-text-card); border-color: var(--color-border);">
-                        Job Description
+                        <?php echo $lang['label_description'] ?? 'Job Description'; ?>  
                     </h2>
                     <p class="text-base leading-relaxed whitespace-pre-wrap" style="color: var(--color-text-card); opacity: 0.9;">
                         <?php echo nl2br(htmlspecialchars($job['description'])); ?>
@@ -128,7 +128,7 @@ include '../templates/header.php';
                 
                 <section class="mb-6">
                     <h2 class="text-xl font-bold mb-3 border-b pb-1" style="color: var(--color-text-card); border-color: var(--color-border);">
-                        Required Skills
+                       <?php echo $lang['label_skill'] ?? 'Skill'; ?>
                     </h2>
                     <div class="flex flex-wrap gap-2 text-sm" style="color: var(--color-text-card);">
                         <?php 
@@ -157,7 +157,7 @@ include '../templates/header.php';
             <aside class="w-full md:w-80 p-6 border-l" 
             style="background-color: var(--color-bg-card); border-color: var(--color-border); min-height: calc(100vh - 60px); position: sticky; top: 60px;">
 
-            <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);">Quick Actions</h2>
+            <h2 class="text-xl font-bold mb-4" style="color: var(--color-primary);"><?php echo $lang['label_quick'] ?? 'Quick Actions'; ?></h2>
             <nav class="mt-8 space-y-3 pt-4 border-t" style="border-color: var(--color-border);">
 
                             <?php 
@@ -167,26 +167,28 @@ include '../templates/header.php';
             <a href="chat.php?app_id=<?php echo $application_id_if_applied; ?>" 
             class="block px-4 py-3 rounded-lg font-semibold text-white text-center"
             style="background-color: var(--color-accent); cursor: pointer;">
-            <i class="fa fa-comment mr-2"></i> Chat with Recruiter
+            <i class="fa fa-comment mr-2"></i> <?php echo $lang['button_chatbox'] ?? 'Chat with Recruiter'; ?>
             </a>
                             <?php else: ?>
                             <span class="block px-4 py-3 rounded-lg text-center opacity-70" style="color: var(--color-text-card);">
-                                Chat available after application.
+                               <?php echo $lang['label_chatalert'] ?? 'Chat available after application.'; ?> 
                             </span>
                             <?php endif; ?>
 
                             <a href="<?php echo htmlspecialchars($job['website_url'] ?? '#'); ?>" target="_blank" 
             class="block px-4 py-2 rounded-lg hover:underline" 
             style="background-color: var(--color-bg-main); border: 1px solid var(--color-border); color: var(--color-text-card);">
-            <i class="fa fa-globe mr-2"></i> Visit Company Website
+            <i class="fa fa-globe mr-2"></i> <?php echo $lang['button_visitcompany'] ?? 'Visit Company Website'; ?>
             </a>
                             
-                            <a href="company_profile.php?company_id=<?php echo $job['company_id']; ?>" 
+            <a href="company_profile.php?company_id=<?php echo $job['company_id']; ?>" 
                             class="block px-4 py-2 rounded-lg hover:underline"
                             style="background-color: var(--color-bg-main); border: 1px solid var(--color-border); color: var(--color-text-card);">
-                            <i class="fa fa-building mr-2"></i> View Company Profile
-                            </a>
-                            
+                            <i class="fa fa-building mr-2"></i><?php echo $lang['button_companyprofile'] ?? 'View Company Profile'; ?> 
+            </a>
+            <a href="view_jobs.php" class="flex items-center gap-3 hover:text-gray-600" style="color: var(--color-primary);">
+                    <i class="fa fa-arrow-left w-5"></i><span>Back to Job Listings</span>
+            </a>   
             </nav>
             </aside>
     </div>

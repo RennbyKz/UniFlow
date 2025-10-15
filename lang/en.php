@@ -86,7 +86,7 @@ return [
     'total_applied' => 'Total Applications',
     'shortlisted_count' => 'Shortlisted Count',
     'student_profile' => 'Student Profile',
-    'upload_resume' => 'Upload CV / Resume',
+    'upload_resume' => 'Upload CV / Report',
     'button_save_profile' => 'Save Profile',
     'view_jobs' => 'View Jobs','label_reason' => 'Reason',
     'label_address' => 'Address',

@@ -33,7 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['role'] = $user['role'];
         $_SESSION['user_name'] = $login_input;
         $_SESSION['login_success'] = true;
-
+        $pdo->exec("UPDATE users SET last_login = NOW() WHERE user_id = {$user['user_id']}"); 
+        
         header("Location: redirect.php");
         ob_end_flush();
         exit();
