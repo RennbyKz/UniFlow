@@ -138,7 +138,7 @@ function get_ring_chart_svg($percent, $color_hex) {
                 </div>
             </section>
             
-            <section class="mt-10 mb-8 p-6 rounded-xl shadow-lg border" style="background-color: var(--color-bg-card); border-color: var(--color-border);">
+            <section class="mt-10 mb-8 p-6 rounded-xl  border" style=" border-color: var(--color-border);">
                  <h2 class="text-2xl font-bold mb-4" style="color: var(--color-text-card);">Application Status Breakdown</h2>
                  <div style="max-height: 350px;">
                     <canvas id="funnelChart"></canvas> 

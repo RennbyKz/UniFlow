@@ -6,8 +6,8 @@
 define('DB_USER', 'root');
 define('DB_HOST', 'localhost');
 define('DB_DATABASE', 'sipms_db'); 
-define('DB_PASSWORD', '');          
-define('DB_PORT', '3306');           
+define('DB_PASSWORD', 'root');          
+define('DB_PORT', '3307');           
 
 // 💡 App Settings
 define('APP_NAME', 'UniFlow'); // Logo Name
